@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const CraftSchema = new mongoose.Schema({
+const DropSchema = new mongoose.Schema({
     content: {
         type: String,
         required: true
@@ -23,9 +23,16 @@ const CraftSchema = new mongoose.Schema({
         required: true,
         enum: [1, 2, 3, 4]
     },
+    likes: {
+        type: Number,
+        default: 0
+    },
+    hashtags: [{
+        type: String
+    }],
 });
 
 
-const Craft = mongoose.model('Craft', CraftSchema);
+const Drop = mongoose.model('Drop', DropSchema);
 
-module.exports = Craft;
+module.exports = Drop;

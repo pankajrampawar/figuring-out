@@ -1,11 +1,11 @@
 const ResponseModel = require('../models/Responses');
-const CraftModel = require('../models/CraftModel');
+const DropModel = require('../models/DropModel');
 
-exports.getAllResponsesForCraft = async (req, res) => {
+exports.getAllResponsesForDrop = async (req, res) => {
     try {
-        const { craftId } = req.query;
+        const { dropId } = req.query;
         const responses = await ResponseModel.find({
-            replyOf: craftId
+            replyOf: dropId
         })
 
         res.status(200).json({ message: "responses sent!", responses });
@@ -16,33 +16,33 @@ exports.getAllResponsesForCraft = async (req, res) => {
 
 exports.addResponse = async (req, res) => {
     try {
-        const { craftId, response } = req.body;
+        const { dropId, response } = req.body;
 
-        const craftToBeResponded = await CraftModel.findById(craftId);
+        const dropToBeResponded = await DropModel.findById(dropId);
         
-        if (!craftId || !response) {
-            res.status(400).json({ message: "craftId or response content not found." })
+        if (!dropId || !response) {
+            res.status(400).json({ message: "dropId or response content not found." })
         };
 
-        if (!craftToBeResponded) {
-            res.status(400).json({ message: "Craft not found!", craftId });
+        if (!dropToBeResponded) {
+            res.status(400).json({ message: "drop not found!", dropId });
             return;
         };
 
         const responseToAdd = new ResponseModel({ 
-            replyOf: craftId,
+            replyOf: dropId,
             content: response
         });
         
         const newResponse = await responseToAdd.save();
 
-        const updatedCraft = await CraftModel.findByIdAndUpdate(
-            craftId, 
+        const updatedDrop = await DropModel.findByIdAndUpdate(
+            dropId, 
             { $push: { responses: newResponse._id } },
             { new: true }
         )
 
-        res.status(200).json({ message: "response added successfully", updatedCraft })
+        res.status(200).json({ message: "response added successfully", updatedDrop })
 
     } catch (error) {
         

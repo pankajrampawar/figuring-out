@@ -11,7 +11,7 @@ const ResponseSchema = new mongoose.Schema({
     },
     replyOf: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Craft",
+        ref: "Drop",
         required: true
     }
 })
