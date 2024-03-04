@@ -2,7 +2,7 @@ const express = require('express');
 const connectDB = require('./db')
 const cors = require('cors');
 const userRoute = require('./routes/UserRoutes');
-const craftRoute = require('./routes/CraftRoutes');
+const dropRoute = require('./routes/DropRoutes');
 const responseRoute = require('./routes/ResponseRoutes');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser')
@@ -27,7 +27,7 @@ app.get('/', (req, res) => {
 
 connectDB();
 
-app.use('/craft', craftRoute)
+app.use('/craft', dropRoute)
 app.use('/response', responseRoute)
 app.use('/user', userRoute)
 
