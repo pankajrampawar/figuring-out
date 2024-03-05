@@ -2,6 +2,7 @@ import axios from 'axios'
 import Cookies from 'js-cookie';
 import { unstable_noStore as noStore } from 'next/cache';
 import { resolve } from 'styled-jsx/css';
+import stringToTags from './lib/stringToTags';
 
 
 export const signup = async (user) => {
@@ -118,14 +119,22 @@ export const getReplyForCraft = async (id) => {
     }
 }
 
-export const postAnonymousDrop = async (drop, year, branch) => {
+export const postAnonymousDrop = async ({ content, year, branch, tags }) => {
     try {
         const body = {
-            craftToAdd: drop.craftToAdd,
-            year: year,
-            branch: branch
+            content,
+            year,
+            branch
         }
-        const response = await axios.post('http://localhost:3000/drop/addDrop', 
+
+        if (tags) {
+            const hashTags = stringToTags(tags);
+            body.tags = hashTags
+        }
+
+        console.log(body)
+
+        const response = await axios.post('http://localhost:3000/drop/addAnonymousDrop', 
             body,
             {
                 withCredentials: true
