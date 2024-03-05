@@ -20,7 +20,7 @@ export default function Home() {
 
       console.log(userCopy)
       
-      if (response.status) {
+      if (response) {
         router.push('/home')
         localStorage.setItem('user', JSON.stringify(userCopy))
       }
@@ -29,7 +29,6 @@ export default function Home() {
     };
 
     checkAndGetUserAction();
-
   }, [])
 
   return (
