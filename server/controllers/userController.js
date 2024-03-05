@@ -100,9 +100,14 @@ exports.checkStatus = async (req, res) => {
             return res.status(404).json({ message: 'user does not exist', status: false });
         }
 
-        return res.status(200).json({ message: 'user found', status: true, user: user });
+        const userObject  = user.toObject();
+
+        delete userObject.password;
+
+        return res.status(200).json({ message: 'user found', status: true, user: userObject });
     } catch (error) {
         console.log("Error in check status", error);
+
         return res.status(500).json({ message: "internal server error", status: false });
     }
 }

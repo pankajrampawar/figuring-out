@@ -27,7 +27,7 @@ exports.getDrop = async (req, res) => {
     }
 }
 
-exports.addDrop = async (req, res) => {
+exports.addDirectDrop = async (req, res) => {
     try {
 
         const { dropToAdd, branch, year } = req.body;
@@ -48,5 +48,36 @@ exports.addDrop = async (req, res) => {
         res.status(200).json({ message: "Drop updated successfully", drop: newDrop})
     } catch (error) {
         res.status(500).json({ message: "Some database error occured", error });
+    }
+}
+
+exports.addAnonymousDrop = async (req, res) => {
+    try {
+        const { content, branch, year, tags } = req.body;
+
+        if ( !content && !branch && !year ) {
+            res.status(404).json({ message: "content not found!", error });
+            return;
+        }
+
+        const newDropData = {
+            content,
+            branch,
+            year,
+        }
+
+        if (tags && Array.isArray(tags) && tags.length > 0) {
+            newDropData.hashtags = tags;  
+        }
+
+        console.log(newDropData)
+        const newDrop = new DropModel(newDropData);
+
+        await newDrop.save();
+
+        return res.status(200).json({ message: 'drop added successfully', drop: newDrop });
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({ message: "internal server error", error})
     }
 }

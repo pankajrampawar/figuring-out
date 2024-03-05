@@ -27,7 +27,7 @@ app.get('/', (req, res) => {
 
 connectDB();
 
-app.use('/craft', dropRoute)
+app.use('/drop', dropRoute)
 app.use('/response', responseRoute)
 app.use('/user', userRoute)
 
