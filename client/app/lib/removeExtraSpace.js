@@ -1,4 +1,10 @@
-export default function removeExtraSpaces(str) {
+export function adjustWord(word) {
+    let adjustedWord = word.replace(/^\s+/, '');
 
-    return str.replace(/(\s{2,}|(?<!\w)\s+)/g, '');
-}  
+    if (/^[a-zA-Z]/.test(adjustedWord)) {
+        return adjustedWord;
+    } else {
+        adjustedWord = adjustedWord.replace(/^[^a-zA-Z]+/, '');
+        return adjustedWord;
+    }
+}
