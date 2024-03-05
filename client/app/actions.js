@@ -72,17 +72,16 @@ export const login = async (username, password) => {
     }
 }
 
-export const getCrafts = async () => {
-    noStore();
+export const getDrops = async () => {
     try {
 
-        const response = await axios.get('http://localhost:3000/craft/getCrafts', {
+        const response = await axios.get('http://localhost:3000/drop/getDrops', {
             withCredentials: true,
         });
-        
+        console.log(response)
         console.log(response.data);
         
-        return response.data.crafts 
+        return response.data.drops
     } catch (error) {
         console.log("Error sending/ receiving the response", error);
     }
@@ -119,14 +118,14 @@ export const getReplyForCraft = async (id) => {
     }
 }
 
-export const postADrop = async (drop, year, branch) => {
+export const postAnonymousDrop = async (drop, year, branch) => {
     try {
         const body = {
             craftToAdd: drop.craftToAdd,
             year: year,
             branch: branch
         }
-        const response = await axios.post('http://localhost:3000/craft/addCraft', 
+        const response = await axios.post('http://localhost:3000/drop/addDrop', 
             body,
             {
                 withCredentials: true
