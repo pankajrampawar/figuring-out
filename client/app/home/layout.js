@@ -7,6 +7,8 @@ import AddButton from "../ui/addButton";
 import { useRouter, useParams, usePathname } from "next/navigation";
 import PostDrop from "../ui/postAMessage";
 import Link from "next/link";
+import { checkAndGetUser } from "../actions";
+import Loading from "./(overview)/loading";
 
 
 export default function RootLayout({children}) {
@@ -15,13 +17,26 @@ export default function RootLayout({children}) {
 
     const params = useParams();
 
+    const router = useRouter();
+
     const [prevScrollPosition, setPrevScrollPosition] = useState(0);
     const [visible , setVisible] = useState(true);
     const [user, setUser] = useState('');
 
     useEffect(()=>{
-        const userData = JSON.parse(localStorage.getItem('user'));
-        if (userData) setUser(userData);
+        const getUserDataFromBackend = async () => {
+            const userDataFromBackend = await checkAndGetUser();
+
+            if (!userDataFromBackend) {
+                router.push('/');
+                return;
+            }
+
+            localStorage.setItem('user', JSON.stringify(userDataFromBackend))
+            setUser(userDataFromBackend);
+        }
+
+        getUserDataFromBackend();
     }, [])
 
 
@@ -45,23 +60,29 @@ export default function RootLayout({children}) {
 
     return (
         <div>
-            <nav className={`fixed bg-black w-full transition-all duration-500 top-0 left-0 ${visible ? 'opacity-100' : 'opacity-0 -translate-y-12'} z-50`}>
-                <Navbar/>
-            </nav>
-
-            <div className="pt-12">
-                {children}
-            </div>
-
-            <div className={`fixed bg-black w-full transition-all duration-500 bottom-0 left-0 ${ visible ? 'opacity-100' : 'opacity-0 translate-y-8' }`}>
-                <BottomBar/>
-            </div>
-
-            <Link href="/drop">
-            <div className={`fixed bottom-20 right-2 transition-all duration-500 ${visible ? 'opacity-100' : 'opacity-0 translate-x-14'}`}>
-                <AddButton/>
-            </div>
-            </Link>
+            {
+                !user ? '' 
+                :
+                <div>
+                    <nav className={`fixed bg-black w-full transition-all duration-500 top-0 left-0 ${visible ? 'opacity-100' : 'opacity-0 -translate-y-12'} z-50`}>
+                        <Navbar/>
+                    </nav>
+                    
+                    <div className="pt-12">
+                        {children}
+                    </div>
+                    
+                    <div className={`fixed bg-black w-full transition-all duration-500 bottom-0 left-0 ${ visible ? 'opacity-100' : 'opacity-0 translate-y-8' }`}>
+                        <BottomBar/>
+                    </div>
+                    
+                    <Link href="/drop">
+                    <div className={`fixed bottom-20 right-2 transition-all duration-500 ${visible ? 'opacity-100' : 'opacity-0 translate-x-14'}`}>
+                        <AddButton/>
+                    </div>
+                    </Link>
+                </div>
+            }
         </div>
     )
 }
