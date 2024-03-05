@@ -3,8 +3,13 @@
 import { useState, useEffect } from "react"
 import Image from "next/image"
 import { happyMonkey } from "../fonts"
+import { useRouter } from "next/navigation"
+import { postAnonymousDrop } from "../actions"
+import { adjustWord } from "../lib/removeExtraSpace"
 
 export default function DropPage() {
+
+    const router = useRouter();
 
     const [drop, setDrop] = useState('')
 
@@ -12,25 +17,90 @@ export default function DropPage() {
 
     const [direct, setDirect] = useState('')
 
-    const handleDropChange = (e) => {
-        const content = e.target.value;
+    const [anonymous, setAnonymous] = useState(false)
 
-        setDrop(content);
+    const [loading, setLoading] = useState(false)
+
+    const [user, setUser] = useState('')
+
+    useEffect(()=>{
+        const userDataString = localStorage.getItem('user');
+        if (!userDataString) {
+            router.push('/');
+            return;
+        }
+
+        const userData = JSON.parse(userDataString);
+        
+        setUser(userData);
+    }, [])
+
+    const handleDropChange = (e) => {
+        const unAdjustedWord = e.target.value;
+
+        const adjustedWord = adjustWord(unAdjustedWord)
+
+        setDrop(adjustedWord);
         return;
     }
 
     const handleTagChange = (e) => {
-        const content  = e.target.value;
-
-        setTags(content);
+        const unAdjustedTags  = e.target.value;
+        
+        const adjustedTags = adjustWord(unAdjustedTags);
+        setTags(adjustedTags);
         return;
     }
 
+    const handleDirect = () => {
+        setDirect(true);
+        setAnonymous(false);
+    }
 
+    const handleAnonymous = () => {
+        setDirect(false);
+        setAnonymous(true);
+    }
 
+    // Add drop 
+    const handleSubmit = async () => {
+        if (!drop && !tags && (!direct || !anonymous)) {
+            alert('drop sent!')
+            return;
+        }
+
+        if (loading) {
+            return;
+        }
+
+        if(anonymous) {
+            setLoading(true);
+            const response = await postAnonymousDrop({
+                content: drop.trim(), 
+                branch: user.branch, 
+                year: user.year, 
+                tags: tags
+            })
+
+            if (!response) {
+                setLoading(false)
+                alert('plz try again later');
+                router.push('/home')
+                return;
+            }
+
+            setLoading(false);
+            alert('drop sent');  // create custom alert afterwards
+            router.push('/home')
+            return;
+        }
+
+        return;
+    }
     
     return (
-        <main className={`flex flex-col p-3 ${happyMonkey.className} text-xl`}>
+        <main className="flex justify-center items-center xl:pt-10">
+            <div className={`flex flex-col gap-12 p-3 max-w-[600px]  ${happyMonkey.className} text-xl`}>
             <div className="flex flex-col gap-10">
                 <div>
                     <Image
@@ -39,10 +109,11 @@ export default function DropPage() {
                         height={24}
                         width={24}
                         className="invert"
+                        onClick={()=>{router.push('/home')}}
                     />
                 </div>
 
-                <div className="flex flex-col gap-6 px-5 self-center w-[300px] max-w-[400px]">
+                <div className="flex flex-col gap-6 px-2 self-center min-w-[300px] max-w-[400px]">
                     <input
                         placeholder="type a drop"
                         className="bg-black border-b-[0.1px] pb-1 pl-1 focus:outline-none"
@@ -60,23 +131,30 @@ export default function DropPage() {
 
                 <div className="flex gap-4 px-2">
                     <button 
-                        onClick={()=>{handleClick('direct')}}
-                        className="bg-slate-200 text-black p-1 rounded-xl hover:bg-white hover:border-2 border-primary">
+                        onClick={handleDirect}
+                        className={`bg-slate-200 text-black p-1 rounded-xl ${direct ? 'bg-white border-primary' : ''} border-2 hover:bg-white  hover:border-primary`}>
                         Direct
                     </button>
 
-                    <button className="bg-slate-200 text-black p-1 rounded-xl hover:bg-white hover:border-2 border-primary">
+                    <button
+                        onClick={handleAnonymous} 
+                        className={`bg-slate-200 text-black p-1 rounded-xl hover:bg-white border-2 hover:border-primary ${anonymous ? ' bg-white border-primary' : ' '}`}>
                         Anonymous
                     </button>
                 </div>
             </div>
             
-            { drop && tags && 
-
-            <div className={`${drop && tags && direct ? 'hidden' : ' '}`}>
-                <button>Drop</button>
+            { 
+            <div className="flex justify-end px-10">
+                <button 
+                    onClick={handleSubmit}
+                    className={`rounded-xl text-2xl px-3 ${drop && tags && ( direct || anonymous ) ? 'text-black opacity-100' : 'text-black opacity-60'} bg-primary p-1`}
+                >
+                    Drop
+                </button>
             </div>
             }
+            </div>
         </main>
     )
 }
