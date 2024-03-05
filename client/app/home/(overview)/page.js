@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, Suspense } from 'react'
 import MessageCard from "@/app/ui/messageCard"
-import { getCrafts } from '@/app/actions';
+import { getDrops } from '@/app/actions';
 import { useRouter } from 'next/navigation';
 import { HomeSkeleton } from '@/app/ui/skeletons';
 
@@ -14,13 +14,13 @@ export default function Home() {
     const [user, setUser] = useState('');
 
     useEffect(()=>{
-        const getAllCraft = async() => {
+        const getAllDrops = async() => {
             console.log("getting craft")
-            const messages = await getCrafts();
+            const messages = await getDrops();
 
             setCrafts(messages);
         }
-        getAllCraft();
+        getAllDrops();
     }, []);
 
     return (
