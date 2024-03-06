@@ -6,6 +6,7 @@ import { happyMonkey } from "../fonts"
 import { useRouter } from "next/navigation"
 import { postAnonymousDrop } from "../actions"
 import { adjustWord } from "../lib/removeExtraSpace"
+import loadingSvg from '@/public/loader.svg'
 
 export default function DropPage() {
 
@@ -148,9 +149,17 @@ export default function DropPage() {
             <div className="flex justify-end px-10">
                 <button 
                     onClick={handleSubmit}
-                    className={`rounded-xl text-2xl px-3 ${drop && tags && ( direct || anonymous ) ? 'text-black opacity-100' : 'text-black opacity-60'} bg-primary p-1`}
+                    className={`flex justify-center items-center min-w-24 min-h-10 rounded-xl text-2xl px-3 ${drop && tags && ( direct || anonymous ) ? 'text-black opacity-100' : 'text-black opacity-60'} bg-primary p-1`}
                 >
-                    Drop
+                    {!loading ? 'drop' : 
+                        <Image
+                            src={loadingSvg}
+                            height={10}
+                            width={60}
+                            alt="loading"
+                            className="invert ml-3 mt-1"
+                        />
+                    }
                 </button>
             </div>
             }
