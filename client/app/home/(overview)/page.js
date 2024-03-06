@@ -36,6 +36,7 @@ export default function Home() {
                                     year = { craft.year &&  craft.year }
                                     branch = { craft.branch && craft.branch }
                                     replies = { craft.responses ? craft.responses.length : 0 }
+                                    userName= {craft.userName ? craft.userName : 'Anonymous'}
                                 />
                             )
                         }) 

@@ -79,8 +79,6 @@ export const getDrops = async () => {
         const response = await axios.get('http://localhost:3000/drop/getDrops', {
             withCredentials: true,
         });
-        console.log(response)
-        console.log(response.data);
         
         return response.data.drops
     } catch (error) {

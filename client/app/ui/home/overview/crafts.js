@@ -4,6 +4,7 @@ import MessageCard from "../../messageCard";
 export default async function Crafts() {
 
     const crafts = await getCrafts();
+    console.log("this are getCrafts: ", crafts)
     
     return (
         <div>
@@ -18,6 +19,7 @@ export default async function Crafts() {
                                     year = { craft.year &&  craft.year }
                                     branch = { craft.branch && craft.branch }
                                     replies = { craft.responses ? craft.responses.length : 0 }
+                                    userName = {'anonymous'}
                                 />
                             )
                         })

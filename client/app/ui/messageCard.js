@@ -88,7 +88,7 @@ export default function MessageCard(props) {
                 <section className='flex flex-col'>
                         <div className='flex justify-between'>
                             <div className={`${happyMonkey.className} text-xl`}>
-                                Anonymous
+                                {props.userName}
                             </div>
                             <div>
 
