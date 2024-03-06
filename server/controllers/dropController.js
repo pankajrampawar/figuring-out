@@ -1,4 +1,5 @@
 const DropModel = require('../models/DropModel')
+const TagModel = require('../models/TagModel')
 
 exports.getAllDrops = async (req, res) => {
     try {
@@ -74,6 +75,20 @@ exports.addAnonymousDrop = async (req, res) => {
         const newDrop = new DropModel(newDropData);
 
         await newDrop.save();
+
+        if (tags && Array.isArray(tags) && tags.length > 0) {
+            tags.forEach(async (tag) => {
+                const tagExists = await TagModel.findOne({ name: tag });
+                if (tagExists) {
+                    tagExists.drops.push(newDrop._id);
+                    await tagExists.save();
+                } else {
+                    const newTag = new TagModel({ name: tag, drops: [newDrop._id] });
+                    await newTag.save();
+                }
+            });
+        }
+
 
         return res.status(200).json({ message: 'drop added successfully', drop: newDrop });
     } catch (error) {

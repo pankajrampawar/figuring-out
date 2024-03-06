@@ -4,6 +4,7 @@ const cors = require('cors');
 const userRoute = require('./routes/UserRoutes');
 const dropRoute = require('./routes/DropRoutes');
 const responseRoute = require('./routes/ResponseRoutes');
+const tagRoute = require('./routes/TagRoutes');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser')
 const port = 3000
@@ -30,6 +31,7 @@ connectDB();
 app.use('/drop', dropRoute)
 app.use('/response', responseRoute)
 app.use('/user', userRoute)
+app.use('/tag',tagRoute)
 
 app.listen(port, ()=>{
     console.log(`Listening on port ${port}`);
