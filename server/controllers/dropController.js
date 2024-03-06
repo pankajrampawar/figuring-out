@@ -30,18 +30,25 @@ exports.getDrop = async (req, res) => {
 exports.addDirectDrop = async (req, res) => {
     try {
 
-        const { dropToAdd, branch, year } = req.body;
+        const { content, branch, year, username, tags } = req.body;
 
-        if (!dropToAdd) {
+        if (!dropToAdd && !branch && !year && !username) {
             res.status(400).json({ message: "drop is required" });
             return;
         }
 
-        const newDrop = new DropModel({
-            content: dropToAdd, 
-            branch: branch,
-            year: year,
-        })
+        const dropData = {
+            content,
+            branch,
+            year,
+            username,
+        }
+
+        if (tags && Array.isArray(tags) && tags.length > 0) {
+            dropData.hashtags = tags
+        }
+
+        const newDrop = new DropModel(dropData);
         
         await newDrop.save();
 

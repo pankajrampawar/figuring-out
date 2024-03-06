@@ -96,6 +96,27 @@ export default function DropPage() {
             return;
         }
 
+        if (direct) {
+            setLoading(true);
+            const response = await postDirectDrop({
+                content: drop.trim(),
+                userName: user.userName,
+                branch: user.branch,
+                year: user.year,
+                tags: tags
+            })
+
+            if (response) {
+                setLoading(false);
+                alert('drop sent');
+                router.push('/home');
+                return;
+            }
+
+            alert('plz try again later')
+            router.push('/home')
+        }
+
         return;
     }
     

@@ -1,6 +1,9 @@
 const mongoose = require('mongoose');
 
 const DropSchema = new mongoose.Schema({
+    username: {
+        type: String,
+    },
     content: {
         type: String,
         required: true
