@@ -31,9 +31,9 @@ exports.getDrop = async (req, res) => {
 exports.addDirectDrop = async (req, res) => {
     try {
 
-        const { content, branch, year, username, tags } = req.body;
+        const { content, branch, year, userName, tags } = req.body;
 
-        if (!dropToAdd && !branch && !year && !username) {
+        if (!content && !branch && !year && !userName) {
             res.status(400).json({ message: "drop is required" });
             return;
         }
@@ -42,7 +42,7 @@ exports.addDirectDrop = async (req, res) => {
             content,
             branch,
             year,
-            username,
+            userName,
         }
 
         if (tags && Array.isArray(tags) && tags.length > 0) {

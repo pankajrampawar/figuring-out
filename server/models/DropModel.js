@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const DropSchema = new mongoose.Schema({
-    username: {
+    userName: {
         type: String,
     },
     content: {

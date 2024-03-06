@@ -149,6 +149,36 @@ export const postAnonymousDrop = async ({ content, year, branch, tags }) => {
     }
 }
 
+export const postDirectDrop = async ({ content, userName, branch, year, tags }) => {
+    try {
+        const body = {
+            content, 
+            userName,
+            branch,
+            year
+        }
+
+        if (tags) {
+            const hashtags = stringToTags(tags);
+            body.tags = hashtags;
+        }
+
+        const response = await axios.post('http://localhost:3000/drop/addDirectDrop', 
+            body, 
+            {
+                withCredentials: true
+            }
+        )
+
+        console.log(response);
+
+        return true;
+    } catch (error) { 
+        console.log('error sending post directly', error);
+        return false
+    }
+}
+
 export const addResponse = async (craftId, response) => {
     try {
         const result = await axios.post('http://localhost:3000/response/addResponse', 

@@ -4,7 +4,7 @@ import { useState, useEffect } from "react"
 import Image from "next/image"
 import { happyMonkey } from "../fonts"
 import { useRouter } from "next/navigation"
-import { postAnonymousDrop } from "../actions"
+import { postAnonymousDrop, postDirectDrop } from "../actions"
 import { adjustWord } from "../lib/removeExtraSpace"
 import loadingSvg from '@/public/loader.svg'
 
