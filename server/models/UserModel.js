@@ -46,10 +46,21 @@ const UserSchema = new mongoose.Schema({
     bio:{
         type:String,
     },
+    wordsOfConcern:[{
+        type:String,
+    }],
     Notification: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Notification'
-    }
+    },
+    friends:[{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:"User"
+    }],
+    friendsRequest:[{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:"User"
+    }],
 });
 
 const User = mongoose.model('User', UserSchema)
