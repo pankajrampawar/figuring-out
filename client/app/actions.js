@@ -177,10 +177,19 @@ export const postDirectDrop = async ({ content, userName, branch, year, tags }) 
     }
 }
 
-export const addResponse = async (dropId, response) => {
+export const addResponse = async (dropId, response, senderId) => {
     try {
+        const body = {
+            dropId,
+            response,
+        }
+
+        if (senderId) {
+            body.senderId = senderId
+        }
+        
         const result = await axios.post('http://localhost:3000/response/addResponse', 
-            { craftId, response },
+            body,
             {
                 withCredentials: true
             }
