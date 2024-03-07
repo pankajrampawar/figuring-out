@@ -2,10 +2,12 @@
 
 import { useState, useEffect } from 'react';
 import { addResponse } from '../actions';
+import Image from 'next/image'
 import { happyMonkey } from '../fonts';
 import { adjustWord } from '../lib/removeExtraSpace';
+import loadingSvg from '@/public/loader.svg'
 
-export default function ReplyComponent({ dropId, handleReplySent }) {
+export default function ReplyComponent({ dropId, handleReplySent, userId }) {
 
     const [reply, setReply] = useState('');
 
@@ -14,6 +16,8 @@ export default function ReplyComponent({ dropId, handleReplySent }) {
     const [anonymous, setAnonymous] = useState(false)
 
     const [active, setActive] = useState(false)
+
+    const [loading, setLoading] = useState(false);
 
     const handleChange = (e) => {
         const responseWithSpace = e.target.value;
@@ -24,40 +28,71 @@ export default function ReplyComponent({ dropId, handleReplySent }) {
         setActive(responseWithSpace.trim().length > 0)
     }
 
-    const selectDirect = () => {
+    const selectDirect = async () => {
         if (!active) {
             return;
         }
 
+        if (loading) return;
+
+        setLoading(true)
         setDirect(true)
         setAnonymous(false)
+
+        const response = await addResponse(dropId, reply, userId)
+
+        if (!response) {
+            setLoading(false);
+            alert('Try again later. Internet sucks 📶, not us!😒');
+            setDirect(false)
+            return;
+        }
+
+        setLoading(false);
+        setDirect(false)
+        alert("reply sent");
+        handleReplySent(prev => !prev);
+        setReply('')
         return;
     }
 
-    const selectAnonymous = () => {
+    const selectAnonymous = async () => {
         if (!active) {
             return;
         }
+
+        if (loading) return;
 
         setAnonymous(true)
         setDirect(false)
+        setLoading(true)
+
+        const response = await addResponse(dropId, reply);
+
+        if (!response) {
+            setLoading(false);
+            alert("Try again later, Internet sucks 📶, not us! 😒");
+            setAnonymous(false);
+            return;
+        }
+
+        setLoading(false)
+        setAnonymous(false)
+        alert('replied secretly! 🤫');
+        handleReplySent(prev => !prev);
+        setReply('')
         return;
     }
 
-    const handleClick = async () => {
-        const sent = await addResponse(dropId, reply.response)
-
-        if (sent) {
-            handleReplySent((prev) => !prev);
-            setReply({response: ''})
-            alert('reply sent');
-        } else {
-            alert('reply not sent')
+    useEffect(()=>{
+        if (!active) {
+            setDirect(false);
+            setAnonymous(false);
         }
-    }
+    }, [active]) 
 
     return (
-        <div className='bg-surface p-4 pb-2 flex-col gap-4 flex '>
+        <div className='bg-surface p-4 pb-2 flex-col gap-4 flex'>
             <input
                 placeholder='your reply'
                 value={reply}
@@ -73,20 +108,42 @@ export default function ReplyComponent({ dropId, handleReplySent }) {
 
                 <div className='flex gap-2 text-black'>
                     <button 
-                        className={`flex justify-center items-center p-1 bg-white rounded-xl border-2 ${happyMonkey.className} 
-                        ${active ? 'bg-white' : 'bg-gray-400 border-gray-400'} ${active && direct ? 'border-primary' : 'bg-white'}`}
+                        className={`flex justify-center items-center p-1 rounded-xl border-2 ${happyMonkey.className} min-w-[86px] min-h-[36px]
+                        ${active ? '  hover:bg-primary' : 'bg-gray-400 border-gray-400'} ${direct ? 'bg-primary border-primary ' : 'bg-white'}`}
 
                         onClick={selectDirect}
                     >
-                        Direct
+                        { direct && loading ? 
+                            <div>
+                                <Image
+                                    src={loadingSvg}
+                                    height={10}
+                                    width={60}
+                                    alt="loading"
+                                    className="invert ml-3 mt-1"
+                                />
+                            </div>
+                        : 'Direct' }
                     </button>
                     <button 
-                        className={`flex justify-center items-center p-1 bg-white rounded-xl border-2 ${happyMonkey.className}
-                        ${active ? 'bg-white' : 'bg-gray-400 border-gray-400'} ${active && anonymous ? 'border-primary' : 'bg-white '}`}
+                        className={`flex justify-center items-center p-1 rounded-xl border-2 ${happyMonkey.className} min-w-[110px] min-h-[36px]
+                        ${active ? 'hover:bg-primary' : 'bg-gray-400 border-gray-400'} ${anonymous ? 'bg-primary border-primary' : 'bg-white'}`}
 
                         onClick={selectAnonymous}
                     >
-                        Anonymous
+                        { anonymous && loading ?
+                            <div>
+                                <Image
+                                    src={loadingSvg}
+                                    height={10}
+                                    width={60}
+                                    alt="loading"
+                                    className="invert ml-3 mt-1"
+                                />
+                            </div> 
+                            : 
+                            'Anonymous' 
+                        }
                     </button>
                 </div>
             </div>

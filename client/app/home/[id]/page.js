@@ -70,7 +70,7 @@ export default function ReplySection() {
             }
 
             <div>
-                <ReplyComponent dropId={params.id} handleReplySent={setReplySent}/> 
+                <ReplyComponent dropId={params.id} handleReplySent={setReplySent} userId={user._id} /> 
             </div>
 
             <div className='flex flex-col gap-3 pl-4'>
