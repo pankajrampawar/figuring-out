@@ -5,10 +5,8 @@ import BottomBar from "../ui/bottomBar";
 import { useState, useEffect } from 'react'
 import AddButton from "../ui/addButton";
 import { useRouter, useParams, usePathname } from "next/navigation";
-import PostDrop from "../ui/postAMessage";
 import Link from "next/link";
 import { checkAndGetUser } from "../actions";
-import Loading from "./(overview)/loading";
 
 
 export default function RootLayout({children}) {

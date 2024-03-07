@@ -102,7 +102,7 @@ export default function MessageCard(props) {
                         </div>
                 </section>
 
-                <section className='text-[18px] pb-4 pt-3 border-b border-gray-600'>
+                <section className={`text-[18px] pb-4 pt-3 border-b border-gray-600 ${happyMonkey.className} tracking-wider`}>
                     <p className='ml-4'>
                         {props.content}
                     </p>

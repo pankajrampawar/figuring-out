@@ -2,12 +2,15 @@
 
 import { useState } from 'react';
 import { addResponse } from '../actions';
+import { happyMonkey } from '../fonts';
 
-export default function ReplyComponent({ craftId, handleReplySent }) {
+export default function ReplyComponent({ dropId, handleReplySent }) {
 
     const [reply, setReply] = useState({
         response:  '',
     });
+
+    const [direct, setDirect] = useState(false)
 
     const handleChange = (e) => {
         const response = e.target.value;
@@ -18,7 +21,7 @@ export default function ReplyComponent({ craftId, handleReplySent }) {
     }
 
     const handleClick = async () => {
-        const sent = await addResponse(craftId, reply.response)
+        const sent = await addResponse(dropId, reply.response)
 
         if (sent) {
             handleReplySent((prev) => !prev);
@@ -40,13 +43,19 @@ export default function ReplyComponent({ craftId, handleReplySent }) {
                 className=' bg-surface text-white pb-2 border-b border-b-gray-400 focus:outline-none'
             />
 
-            <div className='flex justify-end pr-10'>
-                <button
-                    className={`text-black rounded-xl p-1.5 w-16 ${reply.response ? 'bg-white font-bold' : 'bg-gray-300'}`}
-                    onClick={handleClick}
-                >
-                    send
-                </button>
+            <div className='flex justify-start pr-10 items-center gap-4'>
+                <div>
+                    send: 
+                </div>
+
+                <div className='flex gap-2 text-black'>
+                    <button className={`flex justify-center items-center p-1 bg-white rounded-xl ${happyMonkey.className}`}>
+                        Direct
+                    </button>
+                    <button className={`flex justify-center items-center p-1 bg-white rounded-xl ${happyMonkey.className}`}>
+                        Anonymously
+                    </button>
+                </div>
             </div>
         </div>
     )

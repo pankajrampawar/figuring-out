@@ -1,42 +1,58 @@
 'use client'
 
 import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import ReplyCard from '@/app/ui/replyCard';
 import MessageClickedCard from '@/app/ui/messageClickedCard';
 import { useParams } from 'next/navigation';
-import { getReplyForCraft } from '@/app/actions';
-import { getCraft } from '@/app/actions';
+import { getReplyForDrop } from '@/app/actions';
+import { getDrop } from '@/app/actions';
 import ReplyComponent from '@/app/ui/postReplyCard';
 
 export default function ReplySection() {
 
+    const router = useRouter();
 
-    const [replies, setReplies] = useState([' ']);
-    const [craft, setCraft] = useState(' ')
+    const [replies, setReplies] = useState(['']);
+    const [drop, setDrop] = useState('')
     const [replySent, setReplySent] = useState(false)
+
+    const [user, setUser] = useState('');
     const params = useParams();
-    const craftId = params.id;
+    const dropId = params.id;
 
 
     useEffect(()=>{
+
+        const userDataString = localStorage.getItem('user');
+
+        if (!userDataString) {
+            router.push('/home');
+            return;
+        }
+
+        setUser[userDataString];
+
         const getAllReplies = async () => {
-            const repliesGot = await getReplyForCraft(craftId)
-            setReplies(repliesGot);    
+            const repliesGot = await getReplyForDrop(dropId)
+            setReplies(repliesGot);  
+            return;  
         }
 
-        const getCraftById = async () => {
-            const message = await getCraft(craftId)
-            setCraft(message)
+        const getDropById = async () => {
+            const message = await getDrop(dropId)
+            setDrop(message)
+            return;
         }
 
-        getCraftById();
+        getDropById();
 
         getAllReplies();
     }, [])
 
     useEffect(() => {
         const getAllReplies = async () => {
-            const repliesGot = await getReplyForCraft(craftId);
+            const repliesGot = await getReplyForDrop(dropId);
             setReplies(repliesGot);
         }
 
@@ -45,16 +61,16 @@ export default function ReplySection() {
 
     return (
         <div className='flex flex-col gap-2'>
-            {   craft.content && craft.content &&
+            {  drop && drop.content && drop.content &&
                 <div>
                 <MessageClickedCard
-                    content = {craft.content}
+                    content = {drop.content}
                 />
                 </div>
             }
 
             <div>
-                <ReplyComponent craftId={params.id} handleReplySent={setReplySent}/> 
+                <ReplyComponent dropId={params.id} handleReplySent={setReplySent}/> 
             </div>
 
             <div className='flex flex-col gap-3 pl-4'>

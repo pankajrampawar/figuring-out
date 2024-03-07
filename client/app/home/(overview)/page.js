@@ -3,8 +3,8 @@
 import React, { useState, useEffect, Suspense } from 'react'
 import MessageCard from "@/app/ui/messageCard"
 import { getDrops } from '@/app/actions';
-import { useRouter } from 'next/navigation';
 import { HomeSkeleton } from '@/app/ui/skeletons';
+import { useRouter } from 'next/navigation';
 
 export default function Home() {
 
@@ -14,6 +14,15 @@ export default function Home() {
     const [user, setUser] = useState('');
 
     useEffect(()=>{
+        const userDataString = localStorage.getItem('user')
+
+        if (!userDataString) {
+            router.push('/')
+            return;
+        }
+
+        setUser(userDataString);
+
         const getAllDrops = async() => {
             console.log("getting craft")
             const messages = await getDrops();
