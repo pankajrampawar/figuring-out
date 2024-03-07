@@ -84,29 +84,29 @@ export const getDrops = async () => {
     } catch (error) {
         console.log("Error sending/ receiving the response", error);
     }
-};
+};  
 
-export const getCraft = async (id) => {
+export const getDrop = async (id) => {
     try {
-        const response = await axios.get('http://localhost:3000/craft/getCraft', 
+        const response = await axios.get('http://localhost:3000/drop/getDrop', 
             { 
-                params: { craftId: id },
+                params: { dropId: id },
                 withCredentials: true,
             }, 
         )
         
         console.log(response)
-        return response.data.craft;
+        return response.data.drop;
     } catch (error) {
         console.log("Error sending/ receiving the reply", error);
     }
 }
 
-export const getReplyForCraft = async (id) => {
+export const getReplyForDrop = async (id) => {
     try {
         const response = await axios.get('http://localhost:3000/response/getResponses', 
         { 
-            params: { craftId: id },
+            params: { dropId: id },
             withCredentials: true,
         }    
         )
@@ -177,7 +177,7 @@ export const postDirectDrop = async ({ content, userName, branch, year, tags }) 
     }
 }
 
-export const addResponse = async (craftId, response) => {
+export const addResponse = async (dropId, response) => {
     try {
         const result = await axios.post('http://localhost:3000/response/addResponse', 
             { craftId, response },
