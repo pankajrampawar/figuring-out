@@ -45,6 +45,7 @@ exports.addDirectDrop = async (req, res) => {
             branch,
             year,
             userName,
+            userId: req.userId
         }
 
         if (tags && Array.isArray(tags) && tags.length > 0) {
@@ -64,6 +65,7 @@ exports.addDirectDrop = async (req, res) => {
                 if (tagExists) {
                     tagExists.drops.push(newDrop._id);
                     await tagExists.save();
+
                 } else {
                     const newTag = new TagModel({ name: tag, drops: [newDrop._id] });
                     await newTag.save();
@@ -95,6 +97,7 @@ exports.addDirectDrop = async (req, res) => {
                             number: newDrop._id.toString()
                         }]
                     });
+                    await UserModel.findByIdAndUpdate(req.userId,{Notification: newnotification._id });
                 }
             }
         }
@@ -118,6 +121,7 @@ exports.addAnonymousDrop = async (req, res) => {
             content,
             branch,
             year,
+            userId: req.userId,
         }
 
         if (tags && Array.isArray(tags) && tags.length > 0) {
@@ -162,13 +166,14 @@ exports.addAnonymousDrop = async (req, res) => {
 
                     await existingNotification.save();
                 } else {
-                    await NotificationModel.create({
+                    const newnotification=await NotificationModel.create({
                         user: user._id,
                         unread: [{
                             content: `Drop containing words of concern added: ${content}`,
                             number: newDrop._id.toString()
                         }]
                     });
+                    await UserModel.findByIdAndUpdate(req.userId,{Notification: newnotification._id });
                 }
             }
         }
@@ -199,5 +204,92 @@ exports.getDropForUser = async (req, res) => {
         res.status(200).json({ message: "drops found successfully", drops: user.drops });
     } catch (error) {
         res.status(500).json({ message: "unable to get the Drop, please try again later. (controller error)", error });
+    }
+}
+
+exports.likeDrop = async (req, res) => {
+    try {
+        const { dropId } = req.body;
+
+        if (!dropId) {
+            res.status(400).json({ message: "drop id not found" });
+            return;
+        }
+
+        const drop = await DropModel.findById(dropId);
+
+        if (!drop) {
+            res.status(400).json({ message: "drop not found" });
+            return;
+        }
+
+        if (drop.likes.includes(req.userId)) {
+            res.status(400).json({ message: "drop already liked" });
+            return;
+        }
+
+        drop.likes.push(req.userId);
+
+        await drop.save();
+
+        const existingNotification = await NotificationModel.findOne({
+            user: drop.userId,
+            'unread.number': drop.userId.toString()    
+        });
+
+        if (existingNotification) {
+            existingNotification.unread.push({
+                content: `Hey! Someone liked your drop`,
+                number: drop.userId.toString()
+            });
+
+            await existingNotification.save();
+        } else {
+            const newnotification=await NotificationModel.create({
+                user: drop.userId,
+                unread: [{
+                    content: `Someone liked Your Drop`,
+                    number: drop.userId.toString()
+                }]
+            });
+            await UserModel.findByIdAndUpdate(drop.userId, { Notification: newnotification._id });
+        
+
+
+
+        res.status(200).json({ message: "drop liked successfully", drop });
+    } }catch (error) {
+        res.status(500).json({ message: "unable to like the Drop, please try again later. (controller error)", error });
+    }
+}
+
+exports.unlikeDrop = async (req, res) => {
+    try {
+        const { dropId } = req.body;
+
+        if (!dropId) {
+            res.status(400).json({ message: "drop id not found" });
+            return;
+        }
+
+        const drop = await DropModel.findById(dropId);
+
+        if (!drop) {
+            res.status(400).json({ message: "drop not found" });
+            return;
+        }
+
+        if (!drop.likes.includes(req.userId)) {
+            res.status(400).json({ message: "drop not liked" });
+            return;
+        }
+
+        drop.likes = drop.likes.filter((like) => like !== req.userId);
+
+        await drop.save();
+
+        res.status(200).json({ message: "drop unliked successfully", drop });
+    } catch (error) {
+        res.status(500).json({ message: "unable to unlike the Drop, please try again later. (controller error)", error });
     }
 }
