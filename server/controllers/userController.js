@@ -111,3 +111,101 @@ exports.checkStatus = async (req, res) => {
         return res.status(500).json({ message: "internal server error", status: false });
     }
 }
+
+exports.sendFriendRequest = async (req, res) => {
+    try {
+        const {userId} = req.userId;
+        const {friendId} = req.body;
+
+        if (!userId || !friendId) {
+            return res.status(400).json({ message: "Both userId and friendId are required" });
+        }
+
+        const user = await UserModel.findById(userId);
+
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        if (user.friends.includes(friendId) || user.friendsRequest.includes(friendId)) {
+            return res.status(400).json({ message: "Friend request already sent or user is already a friend" });
+        }
+
+        user.friendsRequest.push(friendId);
+        await user.save();
+
+        return res.status(200).json({ message: "Friend request sent successfully" });
+    } catch (error) {
+        console.error("Error sending friend request:", error);
+        return res.status(500).json({ message: "Internal server error", error });
+    }
+};
+
+exports.acceptFriendRequest = async (req, res) => {
+    try {
+        const {userId} = req.userId;
+        const {friendId} = req.body;
+
+        if (!userId || !friendId) {
+            return res.status(400).json({ message: "Both userId and friendId are required" });
+        }
+
+        const user = await UserModel.findById(userId);
+
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        if (!user.friendsRequest.includes(friendId)) {
+            return res.status(400).json({ message: "No friend request found" });
+        }
+
+        user.friendsRequest = user.friendsRequest.filter((id) => id !== friendId);
+        user.friends.push(friendId);
+        await user.save();
+
+        const friend = await UserModel.findById(friendId);
+
+        if (!friend) {
+            return res.status(404).json({ message: "Friend not found" });
+        }
+
+        friend.friends.push(userId);
+        await friend.save();
+
+        return res.status(200).json({ message: "Friend request accepted successfully" });
+    } catch (error) {
+        console.error("Error accepting friend request:", error);
+        return res.status(500).json({ message: "Internal server error", error });
+    }
+};
+
+exports.rejectFriendRequest = async (req, res) => {
+
+    try {
+        const {userId} = req.userId;
+        const {friendId} = req.body;
+
+        if (!userId || !friendId) {
+            return res.status(400).json({ message: "Both userId and friendId are required" });
+        }
+
+        const user = await UserModel.findById(userId);
+
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        if (!user.friendsRequest.includes(friendId)) {
+            return res.status(400).json({ message: "No friend request found" });
+        }
+
+        user.friendsRequest = user.friendsRequest.filter((id) => id !== friendId);
+        await user.save();
+
+        return res.status(200).json({ message: "Friend request rejected successfully" });
+    } catch (error) {
+        console.error("Error rejecting friend request:", error);
+        return res.status(500).json({ message: "Internal server error", error });
+    }
+};

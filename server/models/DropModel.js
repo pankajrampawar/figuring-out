@@ -26,10 +26,10 @@ const DropSchema = new mongoose.Schema({
         required: true,
         enum: [1, 2, 3, 4]
     },
-    likes: {
-        type: Number,
-        default: 0
-    },
+    likes:[ {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'  
+    }],
     hashtags: [{
         type: String
     }],
