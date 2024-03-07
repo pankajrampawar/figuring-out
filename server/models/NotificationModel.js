@@ -9,8 +9,7 @@ const NotificationSchema = new mongoose.Schema({
         type: String,
     }],
     unread: [{
-        content: String,
-        number: String,
+        type: String
     }]
 });
 

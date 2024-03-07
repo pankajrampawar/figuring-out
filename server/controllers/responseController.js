@@ -16,7 +16,7 @@ exports.getAllResponsesForDrop = async (req, res) => {
 
 exports.addResponse = async (req, res) => {
     try {
-        const { dropId, response } = req.body;
+        const { dropId, response, senderId } = req.body;
 
         if (!dropId || !response) {
             res.status(400).json({ message: "dropId or response content not found." })
@@ -28,11 +28,17 @@ exports.addResponse = async (req, res) => {
             res.status(400).json({ message: "drop not found!", dropId });
             return;
         };
-        
-        const responseToAdd = new ResponseModel({ 
+
+        const body = {
             replyOf: dropId,
-            content: response
-        });
+            content: response,
+        }
+
+        if (senderId) {
+            body.senderId = senderId
+        }
+        
+        const responseToAdd = new ResponseModel(body);
         
         const newResponse = await responseToAdd.save();
 

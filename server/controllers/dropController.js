@@ -209,7 +209,7 @@ exports.getDropForUser = async (req, res) => {
 
 exports.likeDrop = async (req, res) => {
     try {
-        const { dropId } = req.body;
+        const { dropId, direct } = req.body;
 
         if (!dropId) {
             res.status(400).json({ message: "drop id not found" });
@@ -228,42 +228,42 @@ exports.likeDrop = async (req, res) => {
             return;
         }
 
-        drop.likes.push(req.userId);
+        drop.likes.push(req.userId);   // adds userId to likes array
 
-        await drop.save();
+        await drop.save(); // saves like
+
+        res.status(200).json({ message: "drop liked successfully", drop });
 
         const existingNotification = await NotificationModel.findOne({
             user: drop.userId,
-            'unread.number': drop.userId.toString()    
         });
 
+        if (!direct) {  // returns if drop is indirect i.e. anonymous
+            return;
+        }
+
+        content = "Hey! Someone liked your drop"; // message
+
         if (existingNotification) {
-            existingNotification.unread.push({
-                content: `Hey! Someone liked your drop`,
-                number: drop.userId.toString()
-            });
+            existingNotification.unread.push({ content });
 
             await existingNotification.save();
         } else {
-            const newnotification=await NotificationModel.create({
+            const newNotification = await NotificationModel.create({
                 user: drop.userId,
-                unread: [{
-                    content: `Someone liked Your Drop`,
-                    number: drop.userId.toString()
-                }]
+                unread: [{ content }]
             });
-            await UserModel.findByIdAndUpdate(drop.userId, { Notification: newnotification._id });
-        
 
+            await UserModel.findByIdAndUpdate(drop.userId, { Notification: newNotification._id });
+        } 
 
-
-        res.status(200).json({ message: "drop liked successfully", drop });
-    } }catch (error) {
+        return;
+    } catch(error) {
         res.status(500).json({ message: "unable to like the Drop, please try again later. (controller error)", error });
     }
 }
 
-exports.unlikeDrop = async (req, res) => {
+exports.removelikeDrop = async (req, res) => {
     try {
         const { dropId } = req.body;
 

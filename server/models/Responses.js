@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 
 const ResponseSchema = new mongoose.Schema({
-    user: {
+    senderId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
     },
