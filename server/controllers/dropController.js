@@ -45,6 +45,7 @@ exports.addDirectDrop = async (req, res) => {
             branch,
             year,
             userName,
+            userId: req.userId
         }
 
         if (tags && Array.isArray(tags) && tags.length > 0) {
@@ -64,6 +65,7 @@ exports.addDirectDrop = async (req, res) => {
                 if (tagExists) {
                     tagExists.drops.push(newDrop._id);
                     await tagExists.save();
+
                 } else {
                     const newTag = new TagModel({ name: tag, drops: [newDrop._id] });
                     await newTag.save();
@@ -119,6 +121,7 @@ exports.addAnonymousDrop = async (req, res) => {
             content,
             branch,
             year,
+            userId: req.userId,
         }
 
         if (tags && Array.isArray(tags) && tags.length > 0) {
@@ -229,8 +232,33 @@ exports.likeDrop = async (req, res) => {
 
         await drop.save();
 
+        const existingNotification = await NotificationModel.findOne({
+            user: drop.userId,
+            'unread.number': drop.userId.toString()    
+        });
+
+        if (existingNotification) {
+            existingNotification.unread.push({
+                content: `Hey! Someone liked your drop`,
+                number: drop.userId.toString()
+            });
+
+            await existingNotification.save();
+        } else {
+            const newnotification=await NotificationModel.create({
+                user: drop.userId,
+                unread: [{
+                    content: `Someone liked Your Drop`,
+                    number: drop.userId.toString()
+                }]
+            });
+            await UserModel.findByIdAndUpdate(drop.userId, { Notification: newnotification._id });
+        
+
+
+
         res.status(200).json({ message: "drop liked successfully", drop });
-    } catch (error) {
+    } }catch (error) {
         res.status(500).json({ message: "unable to like the Drop, please try again later. (controller error)", error });
     }
 }
