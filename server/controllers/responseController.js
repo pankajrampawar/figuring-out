@@ -18,17 +18,17 @@ exports.addResponse = async (req, res) => {
     try {
         const { dropId, response } = req.body;
 
-        const dropToBeResponded = await DropModel.findById(dropId);
-        
         if (!dropId || !response) {
             res.status(400).json({ message: "dropId or response content not found." })
         };
+        
+        const dropToBeResponded = await DropModel.findById(dropId);
 
         if (!dropToBeResponded) {
             res.status(400).json({ message: "drop not found!", dropId });
             return;
         };
-
+        
         const responseToAdd = new ResponseModel({ 
             replyOf: dropId,
             content: response
