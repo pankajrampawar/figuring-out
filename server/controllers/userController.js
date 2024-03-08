@@ -1,5 +1,7 @@
 const bcrypt = require('bcrypt')
 const UserModel = require('../models/UserModel');
+const cloudinary=require('cloudinary').v2;
+
 const { generateAccessToken, generateRefreshToken } = require('../utils/tokenUtils');
 
 exports.createNewUser = async (req, res) => {
@@ -242,3 +244,14 @@ exports.getUserProfile = async (req, res) => {
         return;
     }
 }
+
+/*  logic for uploading the profile pic to cloudinary
+
+const {profilePic}=req.body;
+const uploadedResponse=await cloudinary.uploader.upload(profilePic);
+const user=new User({
+    profilePic:uploadedResponse.secure_url
+});
+
+
+*/
