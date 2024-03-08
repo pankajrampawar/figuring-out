@@ -14,7 +14,10 @@ module.exports = {
         surface: "#1F1F1F",
         secondary: '#303030',
         primary: '#67E3AF',
-        primary2: '#696969'
+        primary2: '#696969',
+        bg1: '#B4EC7C',
+        bg2: '#7CECEC',
+        bg3: '#E3EC7C',
       }
     },
 

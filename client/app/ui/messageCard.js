@@ -5,6 +5,7 @@ import { happyMonkey } from '../fonts'
 import Link from 'next/link'
 import { addResponse } from '../actions'
 import Image from 'next/image'
+import { getRandomNumber } from '../lib/getRandomNumber'
 
 export default function MessageCard(props) {
 
@@ -26,6 +27,9 @@ export default function MessageCard(props) {
 
     const [trigger1, setTrigger1] = useState(false)
     const [trigger2, setTrigger2] = useState(false)
+
+    const number = getRandomNumber();
+    const faceSrc = ['../face1.svg', '../face2.svg', '../eyeGlass.svg']
 
     const handleChange = (e) => {
         const { value } = e.target;
@@ -85,7 +89,16 @@ export default function MessageCard(props) {
     return (
         <div className='flex flex-col text-lg bg-surface py-3 gap-3 px-4 my-2'>
             <Link href={`/home/${props.id}`}>
-                <section className='flex flex-col'>
+                <section className='flex gap-3'>
+                    <div className={`flex justify-center items-center bg-bg${number.toString} rounded-[15px] aspect-square min-w-[40px] max-w-[40px]`}>
+                        <Image
+                            src={faceSrc[number-1]}
+                            alt='mask'
+                            height={30}
+                            width={30}
+                        />
+                    </div>
+                    <div className='flex flex-col'>
                         <div className='flex justify-between'>
                             <div className={`${happyMonkey.className} text-xl`}>
                                 {props.userName}
@@ -100,6 +113,7 @@ export default function MessageCard(props) {
                                 props.year ? getOrdinalYear(props.year) + ' year' : ''
                             }</span>
                         </div>
+                    </div>
                 </section>
 
                 <section className={`text-[18px] pb-4 pt-3 border-b border-gray-600 ${happyMonkey.className} tracking-wider`}>

@@ -5,4 +5,26 @@
 .transparentBlack {
   background-color: rgba(0, 0, 0, 0.402);
 }
+
+.afterEffect::after {
+  content: '';
+  height: 3px;
+  width: 100%;
+  position: absolute;
+  display: block;
+  left: 0px;
+  bottom: -32px;
+  top: 30px;
+  transform: scaleX(0);
+  transition: transform 0.3s ease 0s;
+  background-color: #67E3AF;
+}
+
+.afterEffect.clicked::after {
+  transform: scaleX(1.2)
+}
+
+.afterEffect:hover::after {
+  transform: scaleX(1.2)
+}
  
