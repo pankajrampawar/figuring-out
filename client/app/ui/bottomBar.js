@@ -46,7 +46,7 @@ export default function BottomBar() {
                     </span>
                 </div>
 
-                <Link href='/notifications'>
+                <Link href='/home/notifications'>
                     <div className='flex flex-col items-center'>
                         <span>
                             <Image

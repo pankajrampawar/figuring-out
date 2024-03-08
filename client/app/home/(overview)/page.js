@@ -21,7 +21,7 @@ export default function Home() {
             return;
         }
 
-        setUser(userDataString);
+        setUser(JSON.parse(userDataString));
 
         const getAllDrops = async() => {
             console.log("getting craft")
@@ -42,10 +42,13 @@ export default function Home() {
                                     key={ craft._id }
                                     content={ craft.content }
                                     id={ craft._id }
+                                    userId= { craft.userId ? craft.userId : '' }
                                     year = { craft.year &&  craft.year }
                                     branch = { craft.branch && craft.branch }
                                     replies = { craft.responses ? craft.responses.length : 0 }
                                     userName= {craft.userName ? craft.userName : 'Anonymous'}
+                                    currentUserId = {user._id}
+                                    likes = {craft.likes? craft.likes : '' }
                                 />
                             )
                         }) 

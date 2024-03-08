@@ -1,13 +1,16 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { happyMonkey } from '../fonts'
 import Link from 'next/link'
-import { addResponse } from '../actions'
+import { addResponse, likeADrop, removeLikeFromDrop } from '../actions'
 import Image from 'next/image'
 import { getRandomNumber } from '../lib/getRandomNumber'
+import { useRouter } from 'next/navigation'
 
 export default function MessageCard(props) {
+
+    const router = useRouter();
 
     const getOrdinalYear = (year) => {
         const suffixes = ['th', 'st', 'nd', 'rd'];
@@ -30,6 +33,21 @@ export default function MessageCard(props) {
 
     const number = getRandomNumber();
     const faceSrc = ['../face1.svg', '../face2.svg', '../eyeGlass.svg']
+    const color = ['bg-bg1', 'bg-bg2', 'bg-bg3'];
+
+    useEffect(() => {
+        if (props.likes) {
+            props.likes.forEach(likeId => {
+                if (likeId === props.currentUserId) {
+                    setLikes((prev) => ({
+                        ...prev,
+                        isLiked: true,
+                        number: props.likes.length
+                    }))
+                }
+            })
+        }
+    }, [])
 
     const handleChange = (e) => {
         const { value } = e.target;
@@ -62,10 +80,24 @@ export default function MessageCard(props) {
         }
     }
 
-    const handleLikeClick = async () => {
+    const pushToProfile = () => {
+        if (!props.userId) {
+            return;
+        }
+
+        router.push(`/profile/${props.userId}`);
+    }
+
+    const handleLikeClick  = async () => {
+        if (!likes.isLiked) {
+            const response = likeADrop(props.id)
+        }
+
+        if (likes.isLiked) {
+            const response = removeLikeFromDrop(props.id)
+        }
 
         setLikes((prev) => {
-
             if (!prev.isLiked) {
                 setTrigger1(true);
 
@@ -84,13 +116,13 @@ export default function MessageCard(props) {
                 number: prev.isLiked ? prev.number - 1 : prev.number + 1
             }
         })
+
     }
 
     return (
         <div className='flex flex-col text-lg bg-surface py-3 gap-3 px-4 my-2'>
-            <Link href={`/home/${props.id}`}>
-                <section className='flex gap-3'>
-                    <div className={`flex justify-center items-center bg-bg${number.toString} rounded-[15px] aspect-square min-w-[40px] max-w-[40px]`}>
+                <section className='flex gap-3 items-center' onClick={pushToProfile}>
+                    <div className={`flex justify-center items-center ${color[number-1]} rounded-[15px] min-h-[38px] max-h-[38px] min-w-[40px] max-w-[40px]`}>
                         <Image
                             src={faceSrc[number-1]}
                             alt='mask'
@@ -116,7 +148,8 @@ export default function MessageCard(props) {
                     </div>
                 </section>
 
-                <section className={`text-[18px] pb-4 pt-3 border-b border-gray-600 ${happyMonkey.className} tracking-wider`}>
+            <Link href={`/home/${props.id}`}>
+                <section className={`text-[18px] pb-4 pt-3 border-b-[0.1px] border-primary ${happyMonkey.className} tracking-wider`}>
                     <p className='ml-4'>
                         {props.content}
                     </p>

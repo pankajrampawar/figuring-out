@@ -17,18 +17,7 @@ export default function UserProfile() {
     const [posts, setPosts] = useState(true);
     const [replies, setReplies] = useState(false)
 
-    const [user, setUser] = useState({
-        slayScore: '',
-        drops: '',
-        replies: '',
-        wordsOfConcern: '',
-        friends: '',
-        _id: '',
-        userName: '',
-        college: '',
-        year: '',
-        branch: ''
-    });
+    const [user, setUser] = useState('');
 
     useEffect(()=>{
         const userDetails = localStorage.getItem('user');
@@ -118,19 +107,23 @@ export default function UserProfile() {
                     {userSeen.bio ? userSeen.bio : "nothing to see here.."}
                 </div>
 
-                <div className={`flex justify-between px-8 text-black text-xl py-4`}>
-                    <div>
-                        <button className='bg-white p-1 rounded-xl min-h-[38px] min-w-[115px] hover:bg-primary border border-white '>
-                            Befriend
-                        </button>
-                    </div>
+                {   user._id === userSeen._id ? 
+                    " " 
+                    :
+                    <div className={`flex justify-between px-8 text-black text-xl py-4`}>
+                        <div>
+                            <button className='bg-white p-1 rounded-xl min-h-[38px] min-w-[115px] hover:bg-primary border border-white '>
+                                Befriend
+                            </button>
+                        </div>
 
-                    <div>
-                        <button className='bg-primary p-1 rounded-xl min-h-[38px] min-w-[115px] hover:bg-white border border-primary '>
-                            Message
-                        </button>
+                        <div>
+                            <button className='bg-primary p-1 rounded-xl min-h-[38px] min-w-[115px] hover:bg-white border border-primary '>
+                                Message
+                            </button>
+                        </div>
                     </div>
-                </div>
+                }
             </div>
 
             <div className='flex flex-col py-4'>

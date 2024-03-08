@@ -109,7 +109,7 @@ export default function ReplyComponent({ dropId, handleReplySent, userId }) {
                 <div className='flex gap-2 text-black'>
                     <button 
                         className={`flex justify-center items-center p-1 rounded-xl border-2 ${happyMonkey.className} min-w-[86px] min-h-[36px]
-                        ${active ? '  hover:bg-primary' : 'bg-gray-400 border-gray-400'} ${direct ? 'bg-primary border-primary ' : 'bg-white'}`}
+                        ${active ? 'bg-white  hover:bg-primary' : 'bg-gray-400 border-gray-400'} ${direct ? 'bg-primary border-primary ' : 'bg-gray-200'}`}
 
                         onClick={selectDirect}
                     >
@@ -127,7 +127,7 @@ export default function ReplyComponent({ dropId, handleReplySent, userId }) {
                     </button>
                     <button 
                         className={`flex justify-center items-center p-1 rounded-xl border-2 ${happyMonkey.className} min-w-[110px] min-h-[36px]
-                        ${active ? 'hover:bg-primary' : 'bg-gray-400 border-gray-400'} ${anonymous ? 'bg-primary border-primary' : 'bg-white'}`}
+                        ${active ? 'hover:bg-primary bg-white' : 'bg-gray-400 border-gray-400'} ${anonymous ? 'bg-primary border-primary' : 'bg-gray-200'}`}
 
                         onClick={selectAnonymous}
                     >

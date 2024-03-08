@@ -60,11 +60,14 @@ export default function ReplySection() {
     }, [replySent])
 
     return (
-        <div className='flex flex-col gap-2'>
+        <div className='flex flex-col gap-2 -mt-10'>
             {  drop && drop.content && drop.content &&
                 <div>
                 <MessageClickedCard
                     content = {drop.content}
+                    userName = {drop.userName ? drop.userName : 'Anonymous'}
+                    year = {drop.year}
+                    branch = {drop.branch}
                 />
                 </div>
             }

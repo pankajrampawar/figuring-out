@@ -253,3 +253,43 @@ export const getUser = async (userToGetId) => {
         return;
     }
 }
+
+export const likeADrop = async ( dropId ) => {
+     try {
+        console.log("liking the drop")
+        
+        const response = await axios.post('http://localhost:3000/drop/likeDrop', 
+            { dropId },
+            {
+                withCredentials: true,
+            }
+        )
+
+        if (!response) {
+            return;
+        }
+
+        console.log(response);
+        return response.data;
+    } catch (error) {
+        console.log(error)
+        return;
+    }
+}
+
+export const removeLikeFromDrop = async (dropId) => {
+    try {
+        const response = await axios.post('http://localhost:3000/drop/removeLikeDrop', 
+            { dropId },
+            {
+                withCredentials: true,
+            }
+        )
+
+        if (!response) return;
+        console.log(response)
+        return response.data;
+    } catch (error) {
+        return;
+    }
+}
