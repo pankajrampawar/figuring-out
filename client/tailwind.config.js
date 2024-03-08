@@ -13,7 +13,8 @@ module.exports = {
       colors: {
         surface: "#1F1F1F",
         secondary: '#303030',
-        primary: '#67E3AF'
+        primary: '#67E3AF',
+        primary2: '#696969'
       }
     },
 

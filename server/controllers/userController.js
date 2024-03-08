@@ -212,3 +212,33 @@ exports.rejectFriendRequest = async (req, res) => {
         return res.status(500).json({ message: "Internal server error", error });
     }
 };
+
+exports.getUserProfile = async (req, res) => {
+    try {
+        const { userToGetId } = req.query;
+
+        if (!userToGetId) {
+            res.status(404).json({ message: "user id not found" });
+            return;
+        }
+
+        const user = await UserModel.findById(userToGetId);
+
+        if (!user) {
+            res.status(404).json({ message: "user not found"});
+            return;
+        }
+
+        const copyUser = user.toObject();
+        delete copyUser.password;
+        delete copyUser.friendsRequest;
+        delete copyUser.wordsOfConcern;
+        delete copyUser.friendsRequest
+
+        res.status(200).json({ user: copyUser })
+    } catch (error) {
+        console.log("error in getUser", error);
+        res.status(500).json({ message: "internal server error", error });
+        return;
+    }
+}

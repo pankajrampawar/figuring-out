@@ -231,6 +231,25 @@ export const checkAndGetUser = async () => {
     }
 }
 
+export const getUser = async (userToGetId) => {
+    try {
+        const response = await axios.get('http://localhost:3000/user/getUser', 
+            {
+                params: {userToGetId},
+                withCredentials: true,
+            }
+        )
 
+        if (!response.data.user) {
+            return;
+        }
 
+        console.log(response.data.user)
 
+        return response.data.user;
+
+    } catch (error) {
+        console.log(error);
+        return;
+    }
+}

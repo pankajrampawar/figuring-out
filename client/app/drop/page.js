@@ -154,13 +154,13 @@ export default function DropPage() {
                 <div className="flex gap-4 px-2">
                     <button 
                         onClick={handleDirect}
-                        className={`bg-slate-200 text-black p-1 rounded-xl ${direct ? 'bg-white border-primary' : ''} border-2 hover:bg-white  hover:border-primary`}>
+                        className={`text-black p-1 rounded-xl ${direct ? 'bg-primary border-primary' : 'bg-slate-200'} border-2 hover:bg-primary  hover:border-primary`}>
                         Direct
                     </button>
 
                     <button
                         onClick={handleAnonymous} 
-                        className={`bg-slate-200 text-black p-1 rounded-xl hover:bg-white border-2 hover:border-primary ${anonymous ? ' bg-white border-primary' : ' '}`}>
+                        className={`text-black p-1 rounded-xl hover:bg-primary border-2 hover:border-primary ${anonymous ? ' bg-primary border-primary' : ' bg-white'}`}>
                         Anonymous
                     </button>
                 </div>
