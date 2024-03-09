@@ -10,6 +10,7 @@ import moreVert from '@/public/morevert.svg'
 import loadingSvg from '@/public/loader.svg'
 import { sendFriendRequest } from '@/app/actions';
 import ProfileSkeleton from '@/app/ui/profile/skeletonOfProfilePage';
+import Card from '@/app/ui/card';
 
 export default function UserProfile() {
 
@@ -21,8 +22,9 @@ export default function UserProfile() {
     const [replies, setReplies] = useState(false)
     const [bfLoading, setBfLoading] = useState(false);
     const [loading, setLoading] = useState(true)
-
+    const [myProfile, setMyProfile] = useState(false)
     const [user, setUser] = useState('');
+    const [cardOpen, setCardOpen] = useState(false)
 
     useEffect(()=>{
         const userDetails = localStorage.getItem('user');
@@ -48,6 +50,13 @@ export default function UserProfile() {
         getUserDetails();
         setLoading(false)
     }, [])
+
+    useEffect(() => {
+        if (JSON.stringify(user._id) === JSON.stringify(params.id)) {
+            setMyProfile(true);
+            return;
+        }
+    }, [user])
 
     const sendRequest = async () => {
         setBfLoading(true)
@@ -81,8 +90,8 @@ export default function UserProfile() {
                                 {userSeen.userName}
                             </div>
 
-                            <div>
-                                <div className='flex items-start'> {/* 3 dots */}
+                            {myProfile && <div>
+                                <div className='flex items-start relative' onClick={() => {setCardOpen(prev => !prev)}}> {/* 3 dots */}
                                     <Image
                                         src={moreVert}
                                         height={24} 
@@ -91,7 +100,10 @@ export default function UserProfile() {
                                         className='invert'
                                     />
                                 </div>
-                            </div>
+                                {cardOpen && <Card/>}
+                                {cardOpen && <div className='fixed left-0 top-0 h-screen w-screen z-10' onClick={() => {setCardOpen(false)}}>
+                                </div>}
+                            </div> }
                         </div>
                         <div className={`text-[16px] min-[375px]:text-[20px] -mt-2 text-gray-500`}>
                             single
@@ -131,9 +143,7 @@ export default function UserProfile() {
                     {userSeen.bio ? userSeen.bio : "nothing to see here.."}
                 </div>
 
-                {   user._id === userSeen._id ? 
-                    " " 
-                    :
+                {   !myProfile && 
                     <div className={`flex justify-between px-8 text-black text-xl py-4 ${happyMonkey.className}`}>
                         <div>
                             <button className='bg-white p-1 rounded-xl min-h-[38px] min-w-[115px] hover:bg-primary border border-white '
