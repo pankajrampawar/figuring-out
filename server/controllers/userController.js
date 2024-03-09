@@ -256,6 +256,35 @@ exports.getUserProfile = async (req, res) => {
     }
 }
 
+exports.updateUserProfile = async (req, res) => {
+    try {
+        const userId = req.userId;
+        const { college, year, branch, profilePic,bio } = req.body;
+        
+        const user = await UserModel.findById(userId);
+        
+        const uploadedResponse=await cloudinary.uploader.upload(profilePic);
+
+
+        if (!user) {
+            return res.status(404).json({ message: "user not found" });
+        }
+
+        user.college = college;
+        user.year = year;
+        user.branch = branch;
+        user.profilePic = uploadedResponse.secure_url;
+        user.bio = bio;
+
+        await user.save();
+
+        return res.status(200).json({ message: "user updated successfully" });
+    } catch (error) {
+        console.log("error in update user", error);
+        return res.status(500).json({ message: "internal server error", error });
+    }
+}
+
 /*  logic for uploading the profile pic to cloudinary
 
 const {profilePic}=req.body;
