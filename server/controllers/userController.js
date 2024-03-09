@@ -114,25 +114,36 @@ exports.checkStatus = async (req, res) => {
 
 exports.sendFriendRequest = async (req, res) => {
     try {
-        const {userId} = req.userId;
+        const userId = req.userId;
         const {friendId} = req.body;
 
+        console.log(req.body);
         if (!userId || !friendId) {
             return res.status(400).json({ message: "Both userId and friendId are required" });
         }
 
         const user = await UserModel.findById(userId);
+        const friend = await UserModel.findById(friendId);
+
+        if (!friend) {
+            return res.status(404).json({ message: 'user not found' })
+        }
 
         if (!user) {
             return res.status(404).json({ message: "User not found" });
         }
 
-        if (user.friends.includes(friendId) || user.friendsRequest.includes(friendId)) {
-            return res.status(400).json({ message: "Friend request already sent or user is already a friend" });
+        if (friend.friends.includes(userId)) {
+            return res.status(400).json({ message: 'already a friend'})
         }
 
-        user.friendsRequest.push(friendId);
-        await user.save();
+        if (friend.friendsRequest.includes(friendId)) {
+            return res.status(400).json({ message: "Friend request already sent"});
+        }
+
+        friend.friendsRequest.push(userId);
+        
+        await friend.save();
 
         return res.status(200).json({ message: "Friend request sent successfully" });
     } catch (error) {
@@ -143,8 +154,8 @@ exports.sendFriendRequest = async (req, res) => {
 
 exports.acceptFriendRequest = async (req, res) => {
     try {
-        const {userId} = req.userId;
-        const {friendId} = req.body;
+        const userId = req.userId;
+        const { friendId } = req.body;
 
         if (!userId || !friendId) {
             return res.status(400).json({ message: "Both userId and friendId are required" });
@@ -160,7 +171,7 @@ exports.acceptFriendRequest = async (req, res) => {
             return res.status(400).json({ message: "No friend request found" });
         }
 
-        user.friendsRequest = user.friendsRequest.filter((id) => id !== friendId); //loops through friend request and then filters (removes) friend Id of the one that we want to accept
+        user.friendsRequest = user.friendsRequest.filter((id) => JSON.stringify(id) !== JSON.stringify(friendId)); //loops through friend request and then filters (removes) friend Id of the one that we want to accept
         user.friends.push(friendId); // pushes then to  friendId
         await user.save();
         
@@ -185,7 +196,7 @@ exports.acceptFriendRequest = async (req, res) => {
 exports.rejectFriendRequest = async (req, res) => {
 
     try {
-        const { userId } = req.userId;
+        const userId = req.userId;
         const { friendId } = req.body;
 
         if (!userId || !friendId) {
@@ -202,7 +213,7 @@ exports.rejectFriendRequest = async (req, res) => {
             return res.status(400).json({ message: "No friend request found" });
         }
 
-        user.friendsRequest = user.friendsRequest.filter((id) => id !== friendId);
+        user.friendsRequest = user.friendsRequest.filter((id) => JSON.stringify(id) !== JSON.stringify(friendId));
         await user.save();
 
         return res.status(200).json({ message: "Friend request rejected successfully" });

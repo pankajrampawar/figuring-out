@@ -54,7 +54,7 @@ export default function RootLayout({children}) {
         return () => {
             window.removeEventListener('scroll', handleScroll)
         }
-    }, [prevScrollPosition, visible]);
+    }, [prevScrollPosition, visible, params]);
 
     return (
         <div>

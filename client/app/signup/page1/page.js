@@ -11,23 +11,18 @@ export default function PageOne() {
     const router = useRouter();
 
     useEffect(() => {
-      const checkAndGetUserAction = async () => {
-        const response = await checkAndGetUser();
-        
-        const userCopy = response.user;
+        const performCheckAndGetUser = async () => {
+            const userDetails = await checkAndGetUser();
+            if (userDetails) {
+                router.push('/home');
+                localStorage.setItem('user', JSON.stringify(userDetails));
+                return;
+            }
 
-        console.log(userCopy)
-
-        if (response.status) {
-          router.push('/home')
-          localStorage.setItem('user', JSON.stringify(userCopy))
+            return;
         }
-        
-        return
-      };
-    
-      checkAndGetUserAction();
-    
+
+        performCheckAndGetUser();
     }, [])
 
     const [userData, setUserData] = useState({

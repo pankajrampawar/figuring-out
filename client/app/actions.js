@@ -5,6 +5,7 @@ import { resolve } from 'styled-jsx/css';
 import stringToTags from './lib/stringToTags';
 
 
+
 export const signup = async (user) => {
     try {
         const response = await axios.post('http://localhost:3000/user/signup', 
@@ -290,6 +291,62 @@ export const removeLikeFromDrop = async (dropId) => {
         console.log(response)
         return response.data;
     } catch (error) {
+        return;
+    }
+}
+
+export const sendFriendRequest = async (friendId) => {
+    try {
+        console.log(friendId);
+        const response = await axios.post('http://localhost:3000/user/friendRequest', 
+            { friendId },
+            {
+                withCredentials: true,
+            }
+        )
+
+        if (!response) return;
+
+        return response.data;
+    } catch (error) {
+        return;
+    }
+}
+
+export const acceptFriendRequest = async (friendId) => {
+    try {
+        const response = await axios.post('http://localhost:3000/user/acceptRequest', 
+            { friendId },
+            {
+                withCredentials: true,
+            }
+        );
+        if (!response) {
+            return;
+        }
+
+        return response.data
+    } catch (error) {
+        return;
+    }
+}
+
+export const rejectFriendRequest = async (friendId) => {
+    try {
+        const response = await axios.post('http://localhost:3000/user/rejectRequest', 
+            { friendId },
+            {
+                withCredentials: true,
+            }
+        );
+        
+        if (!response) {
+            return;
+        }
+
+        return response.data
+    } catch (error) {
+        console.log(error)
         return;
     }
 }

@@ -7,6 +7,9 @@ import { useParams } from 'next/navigation';
 import { useRouter } from 'next/navigation';
 import { happyMonkey } from '@/app/fonts';
 import moreVert from '@/public/morevert.svg'
+import loadingSvg from '@/public/loader.svg'
+import { sendFriendRequest } from '@/app/actions';
+import ProfileSkeleton from '@/app/ui/profile/skeletonOfProfilePage';
 
 export default function UserProfile() {
 
@@ -16,6 +19,8 @@ export default function UserProfile() {
     const [userSeen, setUserSeen] = useState('');
     const [posts, setPosts] = useState(true);
     const [replies, setReplies] = useState(false)
+    const [bfLoading, setBfLoading] = useState(false);
+    const [loading, setLoading] = useState(true)
 
     const [user, setUser] = useState('');
 
@@ -41,10 +46,29 @@ export default function UserProfile() {
         }
 
         getUserDetails();
+        setLoading(false)
     }, [])
+
+    const sendRequest = async () => {
+        setBfLoading(true)
+        const response = await sendFriendRequest(params.id);
+        if (!response) {
+            setBfLoading(false);
+            alert('please try again later')
+            return;
+        }
+        setBfLoading(false);
+        alert('request sent');
+        return;
+    }
 
     return (
         <div>
+        {
+            loading && <ProfileSkeleton/>
+        }
+
+        {!loading && <div>
             <div className='bg-surface'>
                 <div className='flex gap-3 items-start px-5 pt-2'>
                     <div className='min-w-[58px] min-h-[58px] min-[375px]:min-w-[62px] bg-primary2 min-[375px]:h-[62px] rounded-xl'>
@@ -110,10 +134,24 @@ export default function UserProfile() {
                 {   user._id === userSeen._id ? 
                     " " 
                     :
-                    <div className={`flex justify-between px-8 text-black text-xl py-4`}>
+                    <div className={`flex justify-between px-8 text-black text-xl py-4 ${happyMonkey.className}`}>
                         <div>
-                            <button className='bg-white p-1 rounded-xl min-h-[38px] min-w-[115px] hover:bg-primary border border-white '>
-                                Befriend
+                            <button className='bg-white p-1 rounded-xl min-h-[38px] min-w-[115px] hover:bg-primary border border-white '
+                                onClick={sendRequest}
+                            >
+                                {
+                                    bfLoading 
+                                        ? 
+                                    <Image
+                                        src={loadingSvg}
+                                        height={10}
+                                        width={60}
+                                        alt="loading"
+                                        className="invert ml-3 mt-1"
+                                    />
+                                        :
+                                    <div>Befriend</div>
+                                }
                             </button>
                         </div>
 
@@ -168,6 +206,7 @@ export default function UserProfile() {
                     }
                 </div>
             </div>
+        </div>}
         </div>
     )
 }

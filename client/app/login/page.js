@@ -15,14 +15,10 @@ export default function Login() {
     const checkAndGetUserAction = async () => {
       const response = await checkAndGetUser();
 
-      if (response.status) {
-        const userCopy = response.user;
-      
-        delete userCopy.password;
-
+      if (response) {
         router.push('/home')
-
-        localStorage.setItem('user', JSON.stringify(userCopy))
+        localStorage.setItem('user', JSON.stringify(response))
+        return;
       }
       
       return

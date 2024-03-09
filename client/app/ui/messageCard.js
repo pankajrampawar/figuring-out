@@ -42,12 +42,17 @@ export default function MessageCard(props) {
                     setLikes((prev) => ({
                         ...prev,
                         isLiked: true,
-                        number: props.likes.length
                     }))
+                    return;
                 }
             })
+
+            setLikes((prev) => ({
+                ...prev,
+                number: props.likes.length
+            }))
         }
-    }, [])
+    }, [props])
 
     const handleChange = (e) => {
         const { value } = e.target;
@@ -71,6 +76,7 @@ export default function MessageCard(props) {
         if (result) {
             setReply(prev => prev+1);
             alert("response sent");
+            setResponse('')
             return;
         }
 

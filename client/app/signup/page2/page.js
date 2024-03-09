@@ -15,12 +15,9 @@ export default function PageTwo() {
       const checkAndGetUserAction = async () => {
         const response = await checkAndGetUser();
 
-        if (response.status) {
-          const userCopy = response.user;  
-          delete userCopy.password;
-
+        if (response) {
           router.push('/home')
-          localStorage.setItem('user', JSON.stringify(userCopy));
+          localStorage.setItem('user', JSON.stringify(response));
         }
         
         return
@@ -42,6 +39,7 @@ export default function PageTwo() {
 
     useEffect(()=>{
         const stringData = localStorage.getItem('userData');
+        localStorage.clear('userData');
         
         const data = JSON.parse(stringData);
 
