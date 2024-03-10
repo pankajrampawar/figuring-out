@@ -353,7 +353,7 @@ export const rejectFriendRequest = async (friendId) => {
 
 export const changeProfilePic = async (imageData) => {
     try {
-        const response = await axios.post("http://localhost:3000//user/update-profile-pic", {
+        const response = await axios.post("http://localhost:3000//user/updateProfile", {
             profilePic : imageData,
         }, {
             withCredentials: true,

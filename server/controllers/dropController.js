@@ -132,9 +132,6 @@ exports.addAnonymousDrop = async (req, res) => {
 
         await newDrop.save();
 
-        await UserModel.findByIdAndUpdate(req.userId, { $push: { drops: newDrop._id } });
-
-
         if (tags && Array.isArray(tags) && tags.length > 0) {
             tags.forEach(async (tag) => {
                 const tagExists = await TagModel.findOne({ name: tag });
@@ -186,7 +183,7 @@ exports.addAnonymousDrop = async (req, res) => {
 
 exports.getDropForUser = async (req, res) => {
     try {
-        const { userId } = req.userId;
+        const { userId } = req.query;
 
         if (!userId) {
             res.status(400).json({ message: "userId not found" });

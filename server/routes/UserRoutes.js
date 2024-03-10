@@ -10,6 +10,7 @@ router.post("/friendRequest", authMiddleware, userController.sendFriendRequest);
 router.post("/acceptRequest", authMiddleware, userController.acceptFriendRequest);
 router.post("/rejectRequest", authMiddleware, userController.rejectFriendRequest);
 router.get("/getUser", authMiddleware, userController.getUserProfile)
-router.post('/updateProfile', authMiddleware, userController.updateUserProfile);
+router.post('/updateProfilePic', authMiddleware, userController.updateUserProfilePic);
+router.post('/updateProfile', authMiddleware, userController.updateProfile)
 
 module.exports = router

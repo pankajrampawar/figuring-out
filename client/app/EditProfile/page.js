@@ -77,8 +77,8 @@ export default function HandleProfileChange() {
                 <div className="fixed top-0 left-0 w-screen h-screen flex justify-center z-20">
                     <EditorCard
                         closeEditor={() => {setEditorOpen(false)}}
-                        handleImageChange={submitImageChange}
-                        handleSubmit={handleSubmit}
+                        handleImageChange={handleImageChange}
+                        handleSubmit={submitImageChange}
                     />
                     <div className="w-full h-full absolute backdrop:blur-3xl bg-black">
                     </div>

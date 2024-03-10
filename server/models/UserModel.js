@@ -33,7 +33,7 @@ const UserSchema = new mongoose.Schema({
     },
     status:{
         type: String,
-        enum: ["Single","In Relationship"]
+        enum: ["single", "in relationship", "searching", "secret", "FWB", "grind mode", "dating"]
     },
     drops:[{
         type:mongoose.Schema.Types.ObjectId,

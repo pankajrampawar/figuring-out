@@ -256,10 +256,10 @@ exports.getUserProfile = async (req, res) => {
     }
 }
 
-exports.updateUserProfile = async (req, res) => {
+exports.updateUserProfilePic = async (req, res) => {
     try {
         const userId = req.userId;
-        const { college, year, branch, profilePic,bio } = req.body;
+        const { profilePic } = req.body;
         
         const user = await UserModel.findById(userId);
         
@@ -270,28 +270,44 @@ exports.updateUserProfile = async (req, res) => {
             return res.status(404).json({ message: "user not found" });
         }
 
-        user.college = college;
-        user.year = year;
-        user.branch = branch;
         user.profilePic = uploadedResponse.secure_url;
-        user.bio = bio;
 
         await user.save();
 
-        return res.status(200).json({ message: "user updated successfully" });
+        const userCopy = user.toObject();
+        delete userCopy.password;
+
+        return res.status(200).json({ message: "user updated successfully", user:userCopy});
     } catch (error) {
         console.log("error in update user", error);
         return res.status(500).json({ message: "internal server error", error });
     }
 }
 
-/*  logic for uploading the profile pic to cloudinary
+exports.updateProfile = async (req, res) => {
+    try {
+        const { bio, status } = req.body
 
-const {profilePic}=req.body;
-const uploadedResponse=await cloudinary.uploader.upload(profilePic);
-const user=new User({
-    profilePic:uploadedResponse.secure_url
-});
+        const userId = req.userId
 
+        if (!bio && !status) {
+            return res.status(404).json({ message: "bio or status not found"});
+        }
 
-*/
+        const user = await UserModel.findById(userId);
+
+        if (!user) {
+            return res.status(404).json({ message: 'user not found'});
+        }
+
+        user.bio = bio,
+        user.status = status,
+
+        await user.save();
+
+        return res.status(200).json({ user })
+    } catch (error) {   
+        console.log(error)
+        return res.status(500).json({ message: 'internal server error' })
+    }
+}
