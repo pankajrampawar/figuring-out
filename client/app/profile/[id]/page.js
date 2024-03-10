@@ -11,6 +11,7 @@ import loadingSvg from '@/public/loader.svg'
 import { sendFriendRequest } from '@/app/actions';
 import ProfileSkeleton from '@/app/ui/profile/skeletonOfProfilePage';
 import Card from '@/app/ui/card';
+import UserDrops from '@/app/ui/userDrops';
 
 export default function UserProfile() {
 
@@ -18,13 +19,14 @@ export default function UserProfile() {
     const params = useParams();
 
     const [userSeen, setUserSeen] = useState('');
-    const [posts, setPosts] = useState(true);
+    const [drops, setDrops] = useState(true);
     const [replies, setReplies] = useState(false)
     const [bfLoading, setBfLoading] = useState(false);
     const [loading, setLoading] = useState(true)
     const [myProfile, setMyProfile] = useState(false)
     const [user, setUser] = useState('');
     const [cardOpen, setCardOpen] = useState(false)
+    const [isFriend, setIsFriend] = useState(false)
 
     useEffect(()=>{
         const userDetails = localStorage.getItem('user');
@@ -58,6 +60,18 @@ export default function UserProfile() {
         }
     }, [user])
 
+    useEffect(() => {
+        if (user.friends && Array.isArray(user.friends) && user.friends.length > 0) {
+            if (user.friends.includes(userSeen._id)) {
+                setIsFriend(true);
+                return
+            }
+            return;
+        }
+
+        return;
+    }, [user, userSeen])
+
     const sendRequest = async () => {
         setBfLoading(true)
         const response = await sendFriendRequest(params.id);
@@ -72,7 +86,7 @@ export default function UserProfile() {
     }
 
     return (
-        <div>
+        <div className='overflow-scroll pb-20'>
         {
             loading && <ProfileSkeleton/>
         }
@@ -80,8 +94,12 @@ export default function UserProfile() {
         {!loading && <div>
             <div className='bg-surface'>
                 <div className='flex gap-3 items-start px-5 pt-2'>
-                    <div className='min-w-[58px] min-h-[58px] min-[375px]:min-w-[62px] bg-primary2 min-[375px]:h-[62px] rounded-xl'>
-                        
+                    <div className='min-w-[58px] min-h-[58px] min-[375px]:min-w-[62px] bg-primary2 min-[375px]:min-h-[62px] rounded-xl flex justify-center items-center'>
+                        {userSeen && <img
+                            src={userSeen.profilePic}
+                            alt='.'
+                            className='max-w-[58px] max-h-[58px] min-[375px]:max-w-[62px] min-[375px]:max-h-[62px] rounded-xl'
+                        />}
                     </div>
 
                     <div className={`text-[20px] min-[375px]:text-[24px] ${happyMonkey.className} flex flex-col w-full`}>
@@ -106,7 +124,7 @@ export default function UserProfile() {
                             </div> }
                         </div>
                         <div className={`text-[16px] min-[375px]:text-[20px] -mt-2 text-gray-500`}>
-                            single
+                            {userSeen.status}
                         </div>
                     </div>
                 </div>
@@ -146,7 +164,7 @@ export default function UserProfile() {
                 {   !myProfile && 
                     <div className={`flex justify-between px-8 text-black text-xl py-4 ${happyMonkey.className}`}>
                         <div>
-                            <button className='bg-white p-1 rounded-xl min-h-[38px] min-w-[115px] hover:bg-primary border border-white '
+                            { !isFriend ? <button className='bg-white p-1 rounded-xl min-h-[38px] min-w-[115px] hover:bg-primary border border-white '
                                 onClick={sendRequest}
                             >
                                 {
@@ -162,7 +180,11 @@ export default function UserProfile() {
                                         :
                                     <div>Befriend</div>
                                 }
+                            </button> : 
+                            <button  className='bg-white p-1 rounded-xl min-h-[38px] min-w-[115px] hover:bg-primary border border-white '>
+                                Friend
                             </button>
+                            }
                         </div>
 
                         <div>
@@ -176,18 +198,18 @@ export default function UserProfile() {
 
             <div className='flex flex-col py-4'>
                 <div className='text-xl flex justify-between px-8'>
-                    <div className={` ${posts ? 'clicked' : '' } afterEffect relative`} 
+                    <div className={` ${drops ? 'clicked' : '' } afterEffect relative`} 
                         onClick={()=>{
                             setReplies(false);
-                            setPosts(true);
+                            setDrops(true);
                         }}
                     >
-                        Posts
+                        Drops
                     </div>
                     <div className={` ${replies ? 'clicked' : '' } afterEffect relative`} 
                         onClick={()=>{
                             setReplies(true);
-                            setPosts(false)
+                            setDrops(false)
                         }}
                     >
                         Replies
@@ -196,10 +218,10 @@ export default function UserProfile() {
 
                 <div className='flex flex-col py-4'>
                     {
-                        posts 
+                        drops && userSeen
                             ? 
                         <div>
-                            here are the posts
+                            <UserDrops userId={userSeen._id} />
                         </div>
                             :
                         ""
@@ -209,7 +231,6 @@ export default function UserProfile() {
                         replies
                             ?
                         <div>
-                            here will be the replies
                         </div>
                             :
                         "" 

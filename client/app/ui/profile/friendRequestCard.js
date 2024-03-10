@@ -49,7 +49,7 @@ export default function FriendRequestCard(props) {
 
         alert('You are now friends!');
         props.toggleTrigger();
-        window.location.reaload();
+        window.location.reload();
         return;
     };
 
@@ -61,7 +61,7 @@ export default function FriendRequestCard(props) {
         }
 
         alert('rejected');
-        window.location.reaload();
+        window.location.reload();
         return;
     };
 

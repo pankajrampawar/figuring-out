@@ -9,6 +9,7 @@ const useImageHook = () => {
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
+    console.log(file)
     if (!file) return;
 
     if (!file.type.startsWith("image/")) {

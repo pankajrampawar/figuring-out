@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react'
 import { happyMonkey } from '../fonts'
 import Link from 'next/link'
-import { addResponse, likeADrop, removeLikeFromDrop } from '../actions'
+import { addResponse, getUser, likeADrop, removeLikeFromDrop } from '../actions'
 import Image from 'next/image'
 import { getRandomNumber } from '../lib/getRandomNumber'
 import { useRouter } from 'next/navigation'
@@ -20,7 +20,7 @@ export default function MessageCard(props) {
 
     const [active, setActive] = useState(false);
     const [response, setResponse] = useState('');
-
+    const [profilePic, setProfilePic] = useState('')
     const [reply, setReply] = useState(props.replies);
 
     const [likes, setLikes] = useState({
@@ -53,6 +53,20 @@ export default function MessageCard(props) {
             }))
         }
     }, [props])
+
+
+    useEffect(() => {
+        const getUserAction = async () => {
+            const response = await getUser(props.userId)
+            if (!response) {
+                return;
+            }
+
+            setProfilePic(response.profilePic);
+        }
+
+        if (props.userId) getUserAction();
+    }, [props.userId])
 
     const handleChange = (e) => {
         const { value } = e.target;
@@ -129,12 +143,19 @@ export default function MessageCard(props) {
         <div className='flex flex-col text-lg bg-surface py-3 gap-3 px-4 my-2'>
                 <section className='flex gap-3 items-center' onClick={pushToProfile}>
                     <div className={`flex justify-center items-center ${color[number-1]} rounded-[15px] min-h-[38px] max-h-[38px] min-w-[40px] max-w-[40px]`}>
+                        {profilePic ? 
+                            <img
+                                src={profilePic}
+                                alt='.'
+                                className='rounded-[15px]'
+                            />
+                        :
                         <Image
                             src={faceSrc[number-1]}
                             alt='mask'
                             height={30}
                             width={30}
-                        />
+                        />}
                     </div>
                     <div className='flex flex-col'>
                         <div className='flex justify-between'>
@@ -155,14 +176,14 @@ export default function MessageCard(props) {
                 </section>
 
             <Link href={`/home/${props.id}`}>
-                <section className={`text-[18px] pb-4 pt-3 border-b-[0.1px] border-primary ${happyMonkey.className} tracking-wider`}>
+                <section className={`text-[18px] pb-4 pt-3 border-b-[0.1px] border-gray-700 ${happyMonkey.className} tracking-wider`}>
                     <p className='ml-4'>
                         {props.content}
                     </p>
                 </section>
             </Link>
             
-            <section className='flex justify-between items-center pt-2'>
+            <section className='flex justify-between items-center'>
                 <div className='flex gap-2 items-center'>
                     <div>
                         <input

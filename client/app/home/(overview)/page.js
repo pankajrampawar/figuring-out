@@ -24,7 +24,6 @@ export default function Home() {
         setUser(JSON.parse(userDataString));
 
         const getAllDrops = async() => {
-            console.log("getting craft")
             const messages = await getDrops();
 
             setCrafts(messages);

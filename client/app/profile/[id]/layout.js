@@ -7,7 +7,7 @@ export default function Layout({ children }) {
             <div className="fixed top-0 transparentBlack w-full">
                 <Navbar/>
             </div>
-            <div className="mt-[46px]">
+            <div className="mt-[52px]">
                 {children}
             </div>
             <div className="fixed bottom-0 w-full">

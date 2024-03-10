@@ -39,7 +39,6 @@ export default function PageTwo() {
 
     useEffect(()=>{
         const stringData = localStorage.getItem('userData');
-        localStorage.clear('userData');
         
         const data = JSON.parse(stringData);
 
@@ -49,7 +48,6 @@ export default function PageTwo() {
             year: data.year,
             branch: data.branch,
         }))
-
     }, []);
 
     const handleChange = (e) => {

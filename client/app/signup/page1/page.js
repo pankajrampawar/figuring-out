@@ -41,15 +41,15 @@ export default function PageOne() {
     }
 
 
-    const handleCLick = () => {
+    const handleClick = () => {
         if (!userData.college && !userData.year && !userData.branch) {
             alert("Fill the details lazy ass")
             return;
         }
-
         localStorage.setItem('userData', JSON.stringify(userData));
 
         router.push('/signup/page2')
+        return;
     }
 
     return (
@@ -129,7 +129,7 @@ export default function PageOne() {
             <section className='flex justify-center'>
                     <button
                          className={`${happyMonkey.className} bg-white text-black text-3xl flex flex-col justify-center items-center h-[90px] w-[120px] rounded-[50px]`}
-                         onClick={handleCLick}
+                         onClick={handleClick}
                     >
                         <Image 
                             src="../next.svg"

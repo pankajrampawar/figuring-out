@@ -63,13 +63,9 @@ export const login = async (username, password) => {
                Cookies.set(cookieName, cookieValue, { path: '/' , sameSite: 'None', secure: true });
            });
         }
-
-        console.log(response);
         
         return { status: true, user: response.user };
     } catch (error) {
-        console.log("error logging in", error);
-        alert(error)
         return {status : false };
     }
 }
@@ -83,7 +79,7 @@ export const getDrops = async () => {
         
         return response.data.drops
     } catch (error) {
-        console.log("Error sending/ receiving the response", error);
+        return;
     }
 };  
 
@@ -96,10 +92,9 @@ export const getDrop = async (id) => {
             }, 
         )
         
-        console.log(response)
         return response.data.drop;
     } catch (error) {
-        console.log("Error sending/ receiving the reply", error);
+        return;
     }
 }
 
@@ -114,7 +109,7 @@ export const getReplyForDrop = async (id) => {
         
         return response.data.responses
     } catch (error) {
-        console.log("Error sending/ receiving the reply", error);
+        return;
     }
 }
 
@@ -131,19 +126,14 @@ export const postAnonymousDrop = async ({ content, year, branch, tags }) => {
             body.tags = hashTags
         }
 
-        console.log(body)
-
         const response = await axios.post('http://localhost:3000/drop/addAnonymousDrop', 
             body,
             {
                 withCredentials: true
             }
         )
-
-        console.log(response);
         return true
     } catch (error) {
-        console.log("error sending / receiveing response", error)
         return false
     }
 }
@@ -244,9 +234,6 @@ export const getUser = async (userToGetId) => {
         if (!response.data.user) {
             return;
         }
-
-        console.log(response.data.user)
-
         return response.data.user;
 
     } catch (error) {
@@ -257,7 +244,6 @@ export const getUser = async (userToGetId) => {
 
 export const likeADrop = async ( dropId ) => {
      try {
-        console.log("liking the drop")
         
         const response = await axios.post('http://localhost:3000/drop/likeDrop', 
             { dropId },
@@ -270,7 +256,6 @@ export const likeADrop = async ( dropId ) => {
             return;
         }
 
-        console.log(response);
         return response.data;
     } catch (error) {
         console.log(error)
@@ -288,7 +273,6 @@ export const removeLikeFromDrop = async (dropId) => {
         )
 
         if (!response) return;
-        console.log(response)
         return response.data;
     } catch (error) {
         return;
@@ -297,7 +281,6 @@ export const removeLikeFromDrop = async (dropId) => {
 
 export const sendFriendRequest = async (friendId) => {
     try {
-        console.log(friendId);
         const response = await axios.post('http://localhost:3000/user/friendRequest', 
             { friendId },
             {
@@ -346,24 +329,55 @@ export const rejectFriendRequest = async (friendId) => {
 
         return response.data
     } catch (error) {
-        console.log(error)
         return;
     }
 }
 
 export const changeProfilePic = async (imageData) => {
     try {
-        const response = await axios.post("http://localhost:3000//user/updateProfile", {
+        const response = await axios.post("http://localhost:3000/user/updateProfilePic", {
             profilePic : imageData,
         }, {
             withCredentials: true,
         })
 
-        console.log(response.data);
-        return response.data;
 
+        return response.data.user;
     } catch (error) {
-        console.log(error)
+        return;
+    }
+}
+
+export const updateProfile = async ({ bio, status }) => {
+    try {
+        const response = await axios.post('http://localhost:3000/user/updateProfile', {
+             bio, status
+        }, {
+            withCredentials: true
+        })
+
+        if (!response.data.user) {
+            return;
+        }
+
+        return response.data.user;
+    } catch (error) {
+        return;
+    }
+}
+
+export const userDrops = async (userId)  => {
+    try {
+        const response = await axios.get('http://localhost:3000/drop/getDropForUser', 
+        {
+            params : {userId : userId},
+            withCredentials: true
+        })
+
+        if (!response.data.drops) return;
+
+        return response.data.drops;
+    } catch (error) {
         return;
     }
 }

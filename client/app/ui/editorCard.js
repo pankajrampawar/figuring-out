@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 
-export default function EditorCard({ handleSubmit, handleImageChange, closeEditor }) {
-    const [imagePreview, setImagePreview] = useState(null);
+export default function EditorCard({ handleSubmit, handleImageChange, closeEditor, loading, profilePic }) {
+    const [imagePreview, setImagePreview] = useState(profilePic);
 
     const handleChange = (event) => {
         const file = event.target.files[0];
@@ -14,6 +14,7 @@ export default function EditorCard({ handleSubmit, handleImageChange, closeEdito
             };
             reader.readAsDataURL(file);
         }
+        handleImageChange(event)
     };
 
     return (
@@ -38,6 +39,13 @@ export default function EditorCard({ handleSubmit, handleImageChange, closeEdito
                     </div>
                 </div>
             </div>
+
+            {
+                loading && 
+                <div className="fixed h-screen w-screen bg-black opacity-80 text-center flex justify-center items-center">
+                    Loading...
+                </div>
+            }
         </div>
     );
 }

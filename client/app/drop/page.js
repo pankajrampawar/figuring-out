@@ -65,8 +65,8 @@ export default function DropPage() {
 
     // Add drop 
     const handleSubmit = async () => {
-        if (!drop && !tags && (!direct || !anonymous)) {
-            alert('drop sent!')
+        if (!drop && (!direct || !anonymous)) {
+            alert('type the message babay bouy!')
             return;
         }
 
@@ -154,7 +154,7 @@ export default function DropPage() {
                 <div className="flex gap-4 px-2">
                     <button 
                         onClick={handleDirect}
-                        className={`text-black p-1 rounded-xl ${direct ? 'bg-primary border-primary' : 'bg-slate-200'} border-2 hover:bg-primary  hover:border-primary`}>
+                        className={`text-black p-1 rounded-xl ${direct ? 'bg-primary border-primary' : 'bg-white'} border-2 hover:bg-primary  hover:border-primary`}>
                         Direct
                     </button>
 
@@ -170,7 +170,7 @@ export default function DropPage() {
             <div className="flex justify-end px-10">
                 <button 
                     onClick={handleSubmit}
-                    className={`flex justify-center items-center min-w-24 min-h-10 rounded-xl text-2xl px-3 ${drop && tags && ( direct || anonymous ) ? 'text-black opacity-100' : 'text-black opacity-60'} bg-primary p-1`}
+                    className={`flex justify-center items-center min-w-24 min-h-10 rounded-xl text-2xl px-3 ${drop && ( direct || anonymous ) ? 'text-black opacity-100' : 'text-black opacity-60'} bg-primary p-1`}
                 >
                     {!loading ? 'drop' : 
                         <Image
